@@ -7,7 +7,7 @@ import java.util.List;
 
 @Service
 public interface TransactionService {
-    public Transaction createTransaction(Long accountId, double amount, String transactionType);
+     Transaction createTransaction(Long accountId, double amount, String transactionType);
 
-    public List<Transaction> getTransactionsByAccountId(Long accountId);
+     List<Transaction> getTransactionsByAccountId(Long accountId);
 }
