@@ -2,6 +2,8 @@ package com.exercise.boot.service;
 
 import com.exercise.boot.entity.Account;
 import com.exercise.boot.entity.Transaction;
+import com.exercise.boot.exception.AccountNotFoundException;
+import com.exercise.boot.exception.InsufficientBalanceException;
 import com.exercise.boot.repository.AccountRepository;
 import com.exercise.boot.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
@@ -24,7 +26,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public Transaction createTransaction(Long accountId, double amount, String transactionType) {
         Account account = accountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
@@ -33,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionDate(LocalDateTime.now());
 
         if ("WITHDRAWAL".equalsIgnoreCase(transactionType) && account.getBalance() < amount) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         if ("WITHDRAWAL".equalsIgnoreCase(transactionType)) {
