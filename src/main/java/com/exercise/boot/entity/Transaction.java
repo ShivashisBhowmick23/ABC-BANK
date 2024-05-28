@@ -19,7 +19,5 @@ public class Transaction {
     private double amount;
     private String transactionType; // e.g., "DEPOSIT", "WITHDRAWAL"
     private LocalDateTime transactionDate;
-
-    // Getters and Setters
 }
 

@@ -4,10 +4,13 @@ import com.exercise.boot.entity.Customer;
 import com.exercise.boot.response.CustomerResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface CustomerService {
 
     public Customer createCustomerWithAccounts(Customer customer);
+    public List<Customer> createCustomerWithAccounts(List<Customer> customerList);
 
     public CustomerResponse getCustomerByAccountId(long accountId);
 }

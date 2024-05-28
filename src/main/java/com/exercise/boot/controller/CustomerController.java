@@ -1,5 +1,6 @@
 package com.exercise.boot.controller;
 
+import com.exercise.boot.constants.BankURLConstant;
 import com.exercise.boot.entity.Customer;
 import com.exercise.boot.exception.CustomerNotFoundException;
 import com.exercise.boot.mapper.CustomerMapper;
@@ -11,8 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
-@RequestMapping("/api/customers")
+@RequestMapping(BankURLConstant.CUSTOMER_SERVICE)
 public class CustomerController {
 
     @Autowired
@@ -20,7 +24,7 @@ public class CustomerController {
     @Autowired
     private CustomerMapper customerMapper;
 
-    @PostMapping
+    @PostMapping(BankURLConstant.ADD_CUSTOMER)
     public ResponseEntity<?> createCustomer(@RequestBody CustomerRequest customerRequest) {
         if (!customerRequest.isVerification_documents()) {
             return ResponseEntity.badRequest().body("Verification document cannot be false.");
@@ -32,7 +36,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponse);
     }
 
-    @GetMapping("/byAccount/{accountId}")
+    @GetMapping(BankURLConstant.GET_CUSTOMER_BY_ACC_ID)
     public ResponseEntity<?> getCustomerByAccountId(@PathVariable long accountId) {
         try {
             CustomerResponse customerResponse = customerService.getCustomerByAccountId(accountId);
@@ -42,6 +46,27 @@ public class CustomerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
+    }
+    @PostMapping(BankURLConstant.ADD_MULTIPLE_CUSTOMERS)
+    public ResponseEntity<?> addMultipleCustomers(@RequestBody List<CustomerRequest> customerRequestList) {
+        List<CustomerRequest> validCustomerRequests = customerRequestList.stream()
+                .filter(CustomerRequest::isVerification_documents)
+                .toList();
+
+        if (validCustomerRequests.size() != customerRequestList.size()) {
+            return ResponseEntity.badRequest().body("Some customer requests do not have verification documents.");
+        }
+
+        List<Customer> customers = validCustomerRequests.stream()
+                .map(customerMapper::convertToEntity)
+                .toList();
+
+        List<Customer> savedCustomers = customerService.createCustomerWithAccounts(customers);
+        List<CustomerResponse> customerResponses = savedCustomers.stream()
+                .map(customerMapper::convertToResponse)
+                .toList();
+
+        return ResponseEntity.ok(customerResponses);
     }
 }
 

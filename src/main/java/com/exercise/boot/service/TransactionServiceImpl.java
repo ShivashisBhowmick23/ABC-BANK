@@ -7,15 +7,20 @@ import com.exercise.boot.exception.InsufficientBalanceException;
 import com.exercise.boot.repository.AccountRepository;
 import com.exercise.boot.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Service
 public class TransactionServiceImpl implements TransactionService {
-
+    Logger logger
+            = LoggerFactory.getLogger(TransactionServiceImpl.class);
     @Autowired
     private TransactionRepository transactionRepository;
 
@@ -35,6 +40,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionDate(LocalDateTime.now());
 
         if ("WITHDRAWAL".equalsIgnoreCase(transactionType) && account.getBalance() < amount) {
+            logger.info("insufficient balance");
             throw new InsufficientBalanceException("Insufficient balance");
         }
 

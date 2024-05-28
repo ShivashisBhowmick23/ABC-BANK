@@ -10,6 +10,8 @@ import com.exercise.boot.util.AccountUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -31,6 +33,27 @@ public class CustomerServiceImpl implements CustomerService {
             account.setAccount_id(accountId);
         }
         return customerRepository.save(customer);
+    }
+
+    @Override
+    public List<Customer> createCustomerWithAccounts(List<Customer> customerList) {
+        List<Customer> savedCustomers = new ArrayList<>();
+        for (Customer customer : customerList) {
+            Customer savedCustomer = createCustomerWithAccounts(customer);
+            savedCustomers.add(savedCustomer);
+        }
+        return savedCustomers;
+    }
+
+    public List<Customer> createCustomersWithAccounts(List<Customer> customers) {
+        List<Customer> savedCustomers = new ArrayList<>();
+
+        for (Customer customer : customers) {
+            Customer savedCustomer = createCustomerWithAccounts(customer);
+            savedCustomers.add(savedCustomer);
+        }
+
+        return savedCustomers;
     }
 
 
