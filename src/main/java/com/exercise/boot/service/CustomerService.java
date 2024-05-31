@@ -12,5 +12,7 @@ public interface CustomerService {
     public Customer createCustomerWithAccounts(Customer customer);
     public List<Customer> createCustomerWithAccounts(List<Customer> customerList);
 
+    public CustomerResponse getCustomerByCustomerId(long customer_id);
     public CustomerResponse getCustomerByAccountId(long accountId);
 }
+

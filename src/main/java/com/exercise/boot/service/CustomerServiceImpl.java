@@ -45,6 +45,19 @@ public class CustomerServiceImpl implements CustomerService {
         return savedCustomers;
     }
 
+    @Override
+    public CustomerResponse getCustomerByCustomerId(long customer_id) {
+        Optional<Customer> customerOpt = customerRepository.findById(customer_id);
+        if (customerOpt.isPresent()) {
+            Customer customer = customerOpt.get();
+            // Convert customer to CustomerResponse (assuming you have a mapper for this)
+            return customerMapper.convertToResponse(customer);
+        } else {
+            throw new CustomerNotFoundException("Customer not found for customer ID: " + customer_id);
+        }
+    }
+
+
     public List<Customer> createCustomersWithAccounts(List<Customer> customers) {
         List<Customer> savedCustomers = new ArrayList<>();
 
