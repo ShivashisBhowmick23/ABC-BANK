@@ -8,22 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping(BankURLConstant.TRANSACTION_SERVICE)
+@RequestMapping("/transaction")
 public class TransactionController {
 
     @Autowired
     private TransactionService transactionService;
 
-    @PostMapping(BankURLConstant.CREATE_TRANSACTION)
+    @PostMapping("/create")
     public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionRequest transactionRequest) {
-        Transaction transaction = transactionService.createTransaction(
-                transactionRequest.getAccountId(),
-                transactionRequest.getAmount(),
-                transactionRequest.getTransactionType()
-        );
+        Transaction transaction = transactionService.createTransaction(transactionRequest.getAccountId(), transactionRequest.getAmount(), transactionRequest.getTransactionType());
         return ResponseEntity.ok(transaction);
     }
 
@@ -32,6 +30,19 @@ public class TransactionController {
     public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@PathVariable Long accountId) {
         List<Transaction> transactions = transactionService.getTransactionsByAccountId(accountId);
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/by-date")
+    public ResponseEntity<?> getTransactionsByDate(@RequestParam String date) {
+        try {
+            LocalDate transactionDate = LocalDate.parse(date);
+            List<Transaction> transactions = transactionService.getTransactionsByDate(transactionDate);
+            return ResponseEntity.ok(transactions);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Invalid date format. Please use YYYY-MM-DD.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
+        }
     }
 }
 

@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/bank")
@@ -66,7 +65,8 @@ public class CustomerController {
 
         return ResponseEntity.ok(customerResponses);
     }
-@GetMapping("/customer/{customer_id}")
+
+    @GetMapping("/customer/{customer_id}")
     public ResponseEntity<CustomerResponse> getCustomerByCustomerId(@PathVariable long customer_id) {
         CustomerResponse response = customerService.getCustomerByCustomerId(customer_id);
         return ResponseEntity.ok(response);
