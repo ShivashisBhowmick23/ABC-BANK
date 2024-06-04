@@ -2,6 +2,8 @@
 INSERT INTO customer (cust_name, verification_documents, cust_mail) VALUES ('John Doe', TRUE, 'john.doe@example.com');
 INSERT INTO customer (cust_name, verification_documents, cust_mail) VALUES ('Jane Smith', TRUE, 'jane.smith@example.com');
 INSERT INTO customer (cust_name, verification_documents, cust_mail) VALUES ('Bob Johnson', TRUE, 'bob.johnson@example.com');
+INSERT INTO customer (cust_name, verification_documents, cust_mail) VALUES ('Mamata Banerjee', FALSE, 'khomota.mamata@example.com');
+INSERT INTO customer (cust_name, verification_documents, cust_mail) VALUES ('Modi Chudi', FALSE, 'namo.chudi@example.com');
 
 -- Insert initial accounts with fixed 9-digit IDs for the example
 INSERT INTO account (account_id, account_type, balance, cust_id) VALUES (123456789, 'SAVINGS', 1000.0, 1);
