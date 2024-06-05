@@ -3,6 +3,7 @@ package com.exercise.boot.controller;
 import com.exercise.boot.constants.BankURLConstant;
 import com.exercise.boot.entity.Transaction;
 import com.exercise.boot.request.TransactionRequest;
+import com.exercise.boot.response.TransactionResponse;
 import com.exercise.boot.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transaction")
@@ -45,9 +47,20 @@ public class TransactionController {
         }
     }
     @GetMapping("/by-transaction-type")
-    public ResponseEntity<?> getTransactionsByTransactionType(@RequestParam String transactionType) {
+    public ResponseEntity<List<TransactionResponse>> getTransactionsByTransactionType(@RequestParam String transactionType) {
         List<Transaction> transactions = transactionService.getTransactionsByTransactionType(transactionType);
-        return ResponseEntity.ok(transactions);
+        List<TransactionResponse> response = transactions.stream()
+                .map(transaction -> {
+                    TransactionResponse transactionResponse = new TransactionResponse();
+                    transactionResponse.setTransactionId(transaction.getTransactionId());
+                    transactionResponse.setAccountId(transaction.getAccount().getAccount_id());
+                    transactionResponse.setAmount(transaction.getAmount());
+                    transactionResponse.setTransactionType(transaction.getTransactionType());
+                    transactionResponse.setTransactionDate(transaction.getTransactionDate());
+                    return transactionResponse;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 }
 
