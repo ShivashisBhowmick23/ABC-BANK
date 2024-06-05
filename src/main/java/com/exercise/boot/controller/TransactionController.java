@@ -46,6 +46,7 @@ public class TransactionController {
             return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
         }
     }
+
     @GetMapping("/by-transaction-type")
     public ResponseEntity<List<TransactionResponse>> getTransactionsByTransactionType(@RequestParam String transactionType) {
         List<Transaction> transactions = transactionService.getTransactionsByTransactionType(transactionType);

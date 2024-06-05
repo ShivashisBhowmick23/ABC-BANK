@@ -8,7 +8,7 @@ public class TransactionMapper {
 
         Transaction transaction = new Transaction();
         transaction.setTransactionId(transactionResponse.getTransactionId());
-       transaction.getAccount().setAccount_id(transactionResponse.getAccountId());
+        transaction.getAccount().setAccount_id(transactionResponse.getAccountId());
         transaction.setAmount(transactionResponse.getAmount());
         transaction.setTransactionType(transactionResponse.getTransactionType());
         transaction.setTransactionDate(transactionResponse.getTransactionDate());
