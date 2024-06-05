@@ -63,4 +63,9 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAllByTransactionDate(date);
     }
 
+    @Override
+    public List<Transaction> getTransactionsByTransactionType(String transactionType) {
+        return transactionRepository.findByTransactionType(transactionType);
+    }
+
 }
