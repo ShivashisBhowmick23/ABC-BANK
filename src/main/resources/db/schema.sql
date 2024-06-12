@@ -21,3 +21,12 @@ CREATE TABLE IF NOT EXISTS transaction (
     transaction_date DATE NOT NULL,
     FOREIGN KEY (account_id) REFERENCES account(account_id)
 );
+
+CREATE TABLE transfer (
+    transfer_id INT PRIMARY KEY AUTO_INCREMENT,
+    from_account_id INT NOT NULL,
+    to_account_id INT NOT NULL,
+    amount DOUBLE NOT NULL,
+    transfer_type VARCHAR(50) NOT NULL,
+    transfer_date DATE NOT NULL
+);

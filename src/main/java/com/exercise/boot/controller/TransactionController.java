@@ -6,11 +6,13 @@ import com.exercise.boot.request.TransactionRequest;
 import com.exercise.boot.response.TransactionResponse;
 import com.exercise.boot.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,19 +69,30 @@ public class TransactionController {
 
     @GetMapping("/by-account-id-and-transaction-type/{accountId}")
     public ResponseEntity<List<TransactionResponse>> getTransactionsByAccountIdAndTransactionType(@PathVariable Long accountId, @RequestParam String transactionType) {
-        List<Transaction> transactions = transactionService.getTransactionsByAccountIdAndTransactionType(accountId, transactionType);
-        List<TransactionResponse> response = transactions.stream()
-                .map(transaction -> {
-                    TransactionResponse transactionResponse = new TransactionResponse();
-                    transactionResponse.setTransactionId(transaction.getTransactionId());
-                    transactionResponse.setAccountId(transaction.getAccount().getAccount_id());
-                    transactionResponse.setAmount(transaction.getAmount());
-                    transactionResponse.setTransactionType(transaction.getTransactionType());
-                    transactionResponse.setTransactionDate(transaction.getTransactionDate());
-                    return transactionResponse;
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+        try {
+            List<Transaction> transactions = transactionService.getTransactionsByAccountIdAndTransactionType(accountId, transactionType);
+            List<TransactionResponse> response = transactions.stream()
+                    .map(transaction -> {
+                        TransactionResponse transactionResponse = new TransactionResponse();
+                        transactionResponse.setTransactionId(transaction.getTransactionId());
+                        transactionResponse.setAccountId(transaction.getAccount().getAccount_id());
+                        transactionResponse.setAmount(transaction.getAmount());
+                        transactionResponse.setTransactionType(transaction.getTransactionType());
+                        transactionResponse.setTransactionDate(transaction.getTransactionDate());
+                        return transactionResponse;
+                    })
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setAccountId(accountId);
+            transactionResponse.setTransactionId(0L);
+            transactionResponse.setAmount(0.0);
+            transactionResponse.setTransactionType(transactionType);
+            transactionResponse.setTransactionDate(LocalDate.now());
+            // Handle the exception here, you can log the error or return an appropriate error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonList(transactionResponse));
+        }
     }
 }
 
