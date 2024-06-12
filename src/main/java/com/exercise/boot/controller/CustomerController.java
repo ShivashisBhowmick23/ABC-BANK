@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bank")
+//@EnableDiscoveryClient while registering in Eureka server we need to use @EnableDiscoveryClient
 public class CustomerController {
 
     @Autowired

@@ -15,4 +15,6 @@ public interface TransactionService {
     List<Transaction> getTransactionsByDate(LocalDate date);
 
     List<Transaction> getTransactionsByTransactionType(String transactionType);
+
+    List<Transaction> getTransactionsByAccountIdAndTransactionType(Long accountId, String transactionType);
 }

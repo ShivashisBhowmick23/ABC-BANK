@@ -68,4 +68,9 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findByTransactionType(transactionType);
     }
 
+    @Override
+    public List<Transaction> getTransactionsByAccountIdAndTransactionType(Long accountId, String transactionType) {
+        return transactionRepository.findAllByAccount_AccountIdAndTransactionType(accountId, transactionType);
+    }
+
 }

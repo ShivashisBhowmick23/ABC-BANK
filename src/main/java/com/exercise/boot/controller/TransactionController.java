@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transaction")
+//@EnableDiscoveryClient while registering in Eureka server we need to use @EnableDiscoveryClient
 public class TransactionController {
 
     @Autowired
@@ -50,6 +51,23 @@ public class TransactionController {
     @GetMapping("/by-transaction-type")
     public ResponseEntity<List<TransactionResponse>> getTransactionsByTransactionType(@RequestParam String transactionType) {
         List<Transaction> transactions = transactionService.getTransactionsByTransactionType(transactionType);
+        List<TransactionResponse> response = transactions.stream()
+                .map(transaction -> {
+                    TransactionResponse transactionResponse = new TransactionResponse();
+                    transactionResponse.setTransactionId(transaction.getTransactionId());
+                    transactionResponse.setAccountId(transaction.getAccount().getAccount_id());
+                    transactionResponse.setAmount(transaction.getAmount());
+                    transactionResponse.setTransactionType(transaction.getTransactionType());
+                    transactionResponse.setTransactionDate(transaction.getTransactionDate());
+                    return transactionResponse;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/by-account-id-and-transaction-type/{accountId}")
+    public ResponseEntity<List<TransactionResponse>> getTransactionsByAccountIdAndTransactionType(@PathVariable Long accountId, @RequestParam String transactionType) {
+        List<Transaction> transactions = transactionService.getTransactionsByAccountIdAndTransactionType(accountId, transactionType);
         List<TransactionResponse> response = transactions.stream()
                 .map(transaction -> {
                     TransactionResponse transactionResponse = new TransactionResponse();
