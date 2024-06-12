@@ -2,10 +2,10 @@ package com.exercise.boot.controller;
 
 import com.exercise.boot.entity.Transfer;
 import com.exercise.boot.exception.TransferNotFoundException;
+import com.exercise.boot.mapper.TransferMapper;
 import com.exercise.boot.request.TransferRequest;
 import com.exercise.boot.response.TransferResponse;
 import com.exercise.boot.service.TransferService;
-import com.exercise.boot.mapper.TransferMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,10 +82,9 @@ public class TransferController {
 
     @GetMapping("/betweenDates")
     public ResponseEntity<List<TransferResponse>> getTransfersByToDateToFromDate(
-            @RequestParam String fromDate, @RequestParam String toDate) {
-        LocalDate start = LocalDate.parse(fromDate);
-        LocalDate end = LocalDate.parse(toDate);
-        List<TransferResponse> transfers = transferService.getTransferByToDateToFromDate(start, end).stream()
+            @RequestParam LocalDate fromDate, @RequestParam LocalDate toDate) {
+
+        List<TransferResponse> transfers = transferService.getTransferByToDateToFromDate(fromDate, toDate).stream()
                 .map(transferMapper::convertToResponse)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(transfers);
