@@ -1,6 +1,5 @@
 package com.exercise.boot;
 
-// Import statements for unit test
 
 import com.exercise.boot.controller.TransferController;
 import com.exercise.boot.entity.Transfer;
@@ -29,13 +28,13 @@ import static org.mockito.Mockito.when;
 public class TransferControllerTest {
 
     @Mock
-    private TransferService transferService;
+    private TransferService mockTransferService;
 
     @Mock
-    private TransferMapper transferMapper;
+    private TransferMapper mockTransferMapper;
 
     @InjectMocks
-    private TransferController transferController;
+    private TransferController mockTransferController;
 
     // Unit test for createTransfer
     @Test
@@ -45,11 +44,11 @@ public class TransferControllerTest {
         Transfer savedTransfer = new Transfer();
         TransferResponse transferResponse = new TransferResponse();
 
-        when(transferMapper.convertToEntity(transferRequest)).thenReturn(transfer);
-        when(transferService.makeTransfer(transfer)).thenReturn(savedTransfer);
-        when(transferMapper.convertToResponse(savedTransfer)).thenReturn(transferResponse);
+        when(mockTransferMapper.convertToEntity(transferRequest)).thenReturn(transfer);
+        when(mockTransferService.makeTransfer(transfer)).thenReturn(savedTransfer);
+        when(mockTransferMapper.convertToResponse(savedTransfer)).thenReturn(transferResponse);
 
-        ResponseEntity<TransferResponse> response = transferController.createTransfer(transferRequest);
+        ResponseEntity<TransferResponse> response = mockTransferController.createTransfer(transferRequest);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponse, response.getBody());
@@ -62,10 +61,10 @@ public class TransferControllerTest {
         Transfer transfer = new Transfer();
         TransferResponse transferResponse = new TransferResponse();
 
-        when(transferService.getTransferById(id)).thenReturn(transfer);
-        when(transferMapper.convertToResponse(transfer)).thenReturn(transferResponse);
+        when(mockTransferService.getTransferById(id)).thenReturn(transfer);
+        when(mockTransferMapper.convertToResponse(transfer)).thenReturn(transferResponse);
 
-        ResponseEntity<TransferResponse> response = transferController.getTransferById(id);
+        ResponseEntity<TransferResponse> response = mockTransferController.getTransferById(id);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponse, response.getBody());
@@ -78,10 +77,10 @@ public class TransferControllerTest {
         List<Transfer> transferList = Arrays.asList(new Transfer());
         List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
 
-        when(transferService.getTransferByDate(currentDate)).thenReturn(transferList);
-        when(transferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
+        when(mockTransferService.getTransferByDate(currentDate)).thenReturn(transferList);
+        when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
 
-        ResponseEntity<List<TransferResponse>> response = transferController.getAllTransfers();
+        ResponseEntity<List<TransferResponse>> response = mockTransferController.getAllTransfers();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
@@ -94,10 +93,10 @@ public class TransferControllerTest {
         List<Transfer> transferList = Arrays.asList(new Transfer());
         List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
 
-        when(transferService.getTransferByFromAccountId(fromAccountId)).thenReturn(transferList);
-        when(transferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
+        when(mockTransferService.getTransferByFromAccountId(fromAccountId)).thenReturn(transferList);
+        when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
 
-        ResponseEntity<List<TransferResponse>> response = transferController.getTransfersByFromAccountId(fromAccountId);
+        ResponseEntity<List<TransferResponse>> response = mockTransferController.getTransfersByFromAccountId(fromAccountId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
@@ -110,10 +109,10 @@ public class TransferControllerTest {
         List<Transfer> transferList = Arrays.asList(new Transfer());
         List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
 
-        when(transferService.getTransferByToAccountId(toAccountId)).thenReturn(transferList);
-        when(transferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
+        when(mockTransferService.getTransferByToAccountId(toAccountId)).thenReturn(transferList);
+        when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
 
-        ResponseEntity<List<TransferResponse>> response = transferController.getTransfersByToAccountId(toAccountId);
+        ResponseEntity<List<TransferResponse>> response = mockTransferController.getTransfersByToAccountId(toAccountId);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
@@ -126,10 +125,10 @@ public class TransferControllerTest {
         List<Transfer> transferList = Arrays.asList(new Transfer());
         List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
 
-        when(transferService.getTransferByTransferType(transferType)).thenReturn(transferList);
-        when(transferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
+        when(mockTransferService.getTransferByTransferType(transferType)).thenReturn(transferList);
+        when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
 
-        ResponseEntity<List<TransferResponse>> response = transferController.getTransfersByTransferType(transferType);
+        ResponseEntity<List<TransferResponse>> response = mockTransferController.getTransfersByTransferType(transferType);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
@@ -142,10 +141,10 @@ public class TransferControllerTest {
         List<Transfer> transferList = Arrays.asList(new Transfer());
         List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
 
-        when(transferService.getTransferByDate(date)).thenReturn(transferList);
-        when(transferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
+        when(mockTransferService.getTransferByDate(date)).thenReturn(transferList);
+        when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
 
-        ResponseEntity<List<TransferResponse>> response = transferController.getTransfersByDate(String.valueOf(date));
+        ResponseEntity<List<TransferResponse>> response = mockTransferController.getTransfersByDate(String.valueOf(date));
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
@@ -159,10 +158,10 @@ public class TransferControllerTest {
         List<Transfer> transferList = Arrays.asList(new Transfer());
         List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
 
-        when(transferService.getTransferByToDateToFromDate(fromDate, toDate)).thenReturn(transferList);
-        when(transferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
+        when(mockTransferService.getTransferByToDateToFromDate(fromDate, toDate)).thenReturn(transferList);
+        when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
 
-        ResponseEntity<List<TransferResponse>> response = transferController.getTransfersByToDateToFromDate(fromDate, toDate);
+        ResponseEntity<List<TransferResponse>> response = mockTransferController.getTransfersByToDateToFromDate(fromDate, toDate);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
