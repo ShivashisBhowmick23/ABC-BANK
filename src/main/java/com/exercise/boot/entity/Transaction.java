@@ -3,7 +3,7 @@ package com.exercise.boot.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -18,8 +18,6 @@ public class Transaction {
     private Account account;
     private double amount;
     private String transactionType; // e.g., "DEPOSIT", "WITHDRAWAL"
-    private LocalDateTime transactionDate;
-
-    // Getters and Setters
+    private LocalDate transactionDate;
 }
 
