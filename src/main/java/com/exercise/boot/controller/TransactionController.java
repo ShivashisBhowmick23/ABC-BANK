@@ -111,7 +111,7 @@ public class TransactionController {
             transactionResponse.setTransactionType(transactionType);
             transactionResponse.setTransactionDate(LocalDate.now());
 
-            // Handle the exception here, you can log the error or return an appropriate error response
+            // Handling the exception here, e.g. return a 500 error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonList(transactionResponse));
         }
     }

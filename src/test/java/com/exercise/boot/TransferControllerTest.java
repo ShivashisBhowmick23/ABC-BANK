@@ -1,6 +1,5 @@
 package com.exercise.boot;
 
-
 import com.exercise.boot.controller.TransferController;
 import com.exercise.boot.entity.Transfer;
 import com.exercise.boot.mapper.TransferMapper;
@@ -12,21 +11,25 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 // Add this annotation to enable Mockito
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
-public class TransferControllerTest {
+class TransferControllerTest {
 
+    @Mock
+    private Logger mockLogger;
     @Mock
     private TransferService mockTransferService;
 
@@ -74,8 +77,8 @@ public class TransferControllerTest {
     @Test
     public void testGetAllTransfers() {
         LocalDate currentDate = LocalDate.now();
-        List<Transfer> transferList = Arrays.asList(new Transfer());
-        List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
+        List<Transfer> transferList = List.of(new Transfer());
+        List<TransferResponse> transferResponseList = List.of(new TransferResponse());
 
         when(mockTransferService.getTransferByDate(currentDate)).thenReturn(transferList);
         when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
@@ -90,8 +93,8 @@ public class TransferControllerTest {
     @Test
     public void testGetTransfersByFromAccountId() {
         int fromAccountId = 1;
-        List<Transfer> transferList = Arrays.asList(new Transfer());
-        List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
+        List<Transfer> transferList = List.of(new Transfer());
+        List<TransferResponse> transferResponseList = List.of(new TransferResponse());
 
         when(mockTransferService.getTransferByFromAccountId(fromAccountId)).thenReturn(transferList);
         when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
@@ -106,8 +109,8 @@ public class TransferControllerTest {
     @Test
     public void testGetTransfersByToAccountId() {
         int toAccountId = 1;
-        List<Transfer> transferList = Arrays.asList(new Transfer());
-        List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
+        List<Transfer> transferList = List.of(new Transfer());
+        List<TransferResponse> transferResponseList = List.of(new TransferResponse());
 
         when(mockTransferService.getTransferByToAccountId(toAccountId)).thenReturn(transferList);
         when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
@@ -122,8 +125,8 @@ public class TransferControllerTest {
     @Test
     public void testGetTransfersByTransferType() {
         String transferType = "type";
-        List<Transfer> transferList = Arrays.asList(new Transfer());
-        List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
+        List<Transfer> transferList = List.of(new Transfer());
+        List<TransferResponse> transferResponseList = List.of(new TransferResponse());
 
         when(mockTransferService.getTransferByTransferType(transferType)).thenReturn(transferList);
         when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
@@ -138,8 +141,8 @@ public class TransferControllerTest {
     @Test
     public void testGetTransfersByDate() {
         LocalDate date = LocalDate.now();
-        List<Transfer> transferList = Arrays.asList(new Transfer());
-        List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
+        List<Transfer> transferList = List.of(new Transfer());
+        List<TransferResponse> transferResponseList = List.of(new TransferResponse());
 
         when(mockTransferService.getTransferByDate(date)).thenReturn(transferList);
         when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
@@ -155,8 +158,8 @@ public class TransferControllerTest {
     public void testGetTransfersByToDateToFromDate() {
         LocalDate fromDate = LocalDate.now();
         LocalDate toDate = LocalDate.now();
-        List<Transfer> transferList = Arrays.asList(new Transfer());
-        List<TransferResponse> transferResponseList = Arrays.asList(new TransferResponse());
+        List<Transfer> transferList = List.of(new Transfer());
+        List<TransferResponse> transferResponseList = List.of(new TransferResponse());
 
         when(mockTransferService.getTransferByToDateToFromDate(fromDate, toDate)).thenReturn(transferList);
         when(mockTransferMapper.convertToResponse(any())).thenReturn(transferResponseList.get(0));
@@ -166,5 +169,4 @@ public class TransferControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(transferResponseList, response.getBody());
     }
-
 }
