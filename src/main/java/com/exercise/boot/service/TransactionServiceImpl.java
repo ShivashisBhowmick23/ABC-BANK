@@ -14,23 +14,27 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
-    Logger logger
-            = LoggerFactory.getLogger(TransactionServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
+
     @Autowired
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private AccountRepository accountRepository; // Assume you have an AccountRepository
+    private AccountRepository accountRepository;
 
     @Override
     @Transactional
     public Transaction createTransaction(Long accountId, double amount, String transactionType) {
+        logger.info("Creating transaction for accountId: {}, amount: {}, transactionType: {}", accountId, amount, transactionType);
+
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        logger.info("Account found: {}", account);
 
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
@@ -39,38 +43,54 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionDate(LocalDate.now());
 
         if ("WITHDRAWAL".equalsIgnoreCase(transactionType) && account.getBalance() < amount) {
-            logger.info("insufficient balance");
+            logger.error("Insufficient balance for accountId: {}", accountId);
             throw new InsufficientBalanceException("Insufficient balance");
         }
 
         if ("WITHDRAWAL".equalsIgnoreCase(transactionType)) {
             account.setBalance(account.getBalance() - amount);
+            logger.info("Withdrawn amount: {}. New balance: {}", amount, account.getBalance());
         } else if ("DEPOSIT".equalsIgnoreCase(transactionType)) {
             account.setBalance(account.getBalance() + amount);
+            logger.info("Deposited amount: {}. New balance: {}", amount, account.getBalance());
         }
 
         accountRepository.save(account);
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        logger.info("Transaction created successfully: {}", savedTransaction);
+
+        return savedTransaction;
     }
 
     @Override
     public List<Transaction> getTransactionsByAccountId(Long accountId) {
-        return transactionRepository.findAll();
+        logger.info("Fetching transactions for accountId: {}", accountId);
+        List<Transaction> transactions = transactionRepository.findAll().stream().filter(transaction -> transaction.getAccount().getAccount_id().equals(accountId)).collect(Collectors.toList());
+        logger.info("Fetched transactions: {}", transactions);
+        return transactions;
     }
 
     @Override
     public List<Transaction> getTransactionsByDate(LocalDate date) {
-        return transactionRepository.findAllByTransactionDate(date);
+        logger.info("Fetching transactions for date: {}", date);
+        List<Transaction> transactions = transactionRepository.findAllByTransactionDate(date);
+        logger.info("Fetched transactions: {}", transactions);
+        return transactions;
     }
 
     @Override
     public List<Transaction> getTransactionsByTransactionType(String transactionType) {
-        return transactionRepository.findByTransactionType(transactionType);
+        logger.info("Fetching transactions for transactionType: {}", transactionType);
+        List<Transaction> transactions = transactionRepository.findByTransactionType(transactionType);
+        logger.info("Fetched transactions: {}", transactions);
+        return transactions;
     }
 
     @Override
     public List<Transaction> getTransactionsByAccountIdAndTransactionType(Long accountId, String transactionType) {
-        return transactionRepository.findAllByAccount_AccountIdAndTransactionType(accountId, transactionType);
+        logger.info("Fetching transactions for accountId: {} and transactionType: {}", accountId, transactionType);
+        List<Transaction> transactions = transactionRepository.findAllByAccount_AccountIdAndTransactionType(accountId, transactionType);
+        logger.info("Fetched transactions: {}", transactions);
+        return transactions;
     }
-
 }
