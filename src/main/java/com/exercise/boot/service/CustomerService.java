@@ -16,5 +16,13 @@ public interface CustomerService {
     public CustomerResponse getCustomerByCustomerId(long customer_id);
 
     public CustomerResponse getCustomerByAccountId(long accountId);
+
+    Customer updateCustomer(Customer customer);
+
+    void deleteCustomer(long customerId);
+
+    List<CustomerResponse> getCustomersByFirstLetterOfName(char letter);
+
+
 }
 

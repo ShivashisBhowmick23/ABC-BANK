@@ -1,6 +1,7 @@
 package com.exercise.boot.controller;
 
 import com.exercise.boot.constants.BankURLConstant;
+import com.exercise.boot.entity.Account;
 import com.exercise.boot.entity.Customer;
 import com.exercise.boot.exception.CustomerNotFoundException;
 import com.exercise.boot.mapper.CustomerMapper;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -96,6 +98,84 @@ public class CustomerController {
         logger.info("Customer found with the customer ID: {}", response);
         return ResponseEntity.ok(response);
     }
+
+    @PutMapping("/customer/{customer_id}")
+    public ResponseEntity<?> updateCustomer(@PathVariable("customer_id") long customerId,
+                                            @RequestBody CustomerRequest updatedCustomerRequest) {
+        try {
+            logger.info("Fetching customer by customer ID: {}", customerId);
+            CustomerResponse customerResponse = customerService.getCustomerByCustomerId(customerId);
+            logger.info("Customer found: {}", customerResponse);
+
+            // Convert updatedCustomerRequest to Customer entity
+            Customer updatedCustomer = customerMapper.convertToEntity(updatedCustomerRequest);
+
+            // Copy relevant fields from customerResponse to updatedCustomer
+            // Assuming you only update specific fields like cust_name, cust_mail, verification_documents, and accountList
+            updatedCustomer.setCust_name(customerResponse.getCust_name());
+            updatedCustomer.setCust_mail(customerResponse.getCust_mail());
+            updatedCustomer.setVerification_documents(customerResponse.isVerification_documents());
+            updatedCustomer.setAccountList(customerResponse.getAccountList().stream()
+                    .map(accountResponse -> {
+                        Account account = new Account();
+                        account.setAccount_id(accountResponse.getAccount_id());
+                        account.setAccount_type(accountResponse.getAccount_type());
+                        account.setBalance(accountResponse.getBalance());
+                        return account;
+                    })
+                    .toList()); // Requires Java 16 or later, use .collect(Collectors.toList()) for earlier versions
+
+            // Update the customer using the service
+            Customer savedCustomer = customerService.updateCustomer(updatedCustomer);
+            logger.info("Customer updated: {}", savedCustomer);
+
+            // Convert updated Customer to CustomerResponse
+            CustomerResponse updatedCustomerResponse = customerMapper.convertToResponse(savedCustomer);
+
+            return ResponseEntity.ok(updatedCustomerResponse);
+        } catch (CustomerNotFoundException e) {
+            logger.error("Customer not found for customer ID: {}", customerId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("An error occurred while updating customer for customer ID: {}", customerId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete/customer/{customer_id}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable("customer_id") long customerId) {
+        try {
+            logger.info("Deleting customer with ID: {}", customerId);
+            customerService.deleteCustomer(customerId);
+            logger.info("Customer deleted successfully");
+
+            return ResponseEntity.ok("Customer with ID " + customerId + " deleted successfully");
+        } catch (CustomerNotFoundException e) {
+            logger.error("Customer not found for ID: {}", customerId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("An error occurred while deleting customer with ID: {}", customerId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/customers/starts-with/{letter}")
+    public ResponseEntity<List<CustomerResponse>> getCustomersByFirstLetterOfName(@PathVariable("letter") char letter) {
+        try {
+            logger.info("Fetching customers whose name starts with: {}", letter);
+            List<CustomerResponse> customers = customerService.getCustomersByFirstLetterOfName(letter);
+            logger.info("Found {} customers", customers.size());
+            return ResponseEntity.ok(customers);
+        } catch (CustomerNotFoundException e) {
+            logger.error("No customers found whose name starts with: {}", letter);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
+        } catch (Exception e) {
+            logger.error("An error occurred while fetching customers by first letter of name: {}", letter, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+
+
 }
 
 

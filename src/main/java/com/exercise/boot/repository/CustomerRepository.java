@@ -6,11 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    @Query("SELECT c FROM Customer c JOIN c.accountList a WHERE a.account_id = :accountId")
+    @Query(value = "SELECT c FROM Customer c JOIN c.accountList a WHERE a.account_id = :accountId", nativeQuery = true)
     Optional<Customer> findCustomerByAccountId(@Param("accountId") long accountId);
+
+    @Query("SELECT c FROM Customer c WHERE LOWER(c.cust_name) LIKE CONCAT(:letter, '%')")
+    List<Customer> findByCustNameStartingWithIgnoreCase(@Param("letter") char letter);
+
 }
 

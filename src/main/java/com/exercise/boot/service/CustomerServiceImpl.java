@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -94,5 +91,29 @@ public class CustomerServiceImpl implements CustomerService {
             logger.error("Customer not found for account ID: {}", accountId);
             throw new CustomerNotFoundException("Customer not found for account ID: " + accountId);
         }
+    }
+
+    @Override
+    public Customer updateCustomer(Customer customer) {
+        logger.info("Updating customer: {}", customer);
+        Customer updatedCustomer = customerRepository.save(customer);
+        logger.info("Customer updated successfully: {}", updatedCustomer);
+        return updatedCustomer;
+    }
+
+    @Override
+    public void deleteCustomer(long customerId) {
+        logger.info("Deleting customer with customer ID: {}", customerId);
+        customerRepository.deleteById(customerId);
+        logger.info("Customer deleted successfully");
+    }
+
+    @Override
+    public List<CustomerResponse> getCustomersByFirstLetterOfName(char firstLetter) {
+        logger.info("Fetching customers with first letter of name: {}", firstLetter);
+        List<Customer> customers = customerRepository.findByCustNameStartingWithIgnoreCase(firstLetter);
+        List<CustomerResponse> customerResponses = Collections.singletonList(customerMapper.convertToResponse((Customer) customers));
+        logger.info("Fetched customers: {}", customerResponses);
+        return customerResponses;
     }
 }
