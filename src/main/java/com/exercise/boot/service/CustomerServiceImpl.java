@@ -5,6 +5,7 @@ import com.exercise.boot.entity.Customer;
 import com.exercise.boot.exception.CustomerNotFoundException;
 import com.exercise.boot.mapper.CustomerMapper;
 import com.exercise.boot.repository.CustomerRepository;
+import com.exercise.boot.response.AccountResponse;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.util.AccountUtil;
 import org.slf4j.Logger;
@@ -12,7 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -60,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerOpt.isPresent()) {
             Customer customer = customerOpt.get();
             CustomerResponse customerResponse = customerMapper.convertToResponse(customer);
-            logger.info("Fetched customer: {}", customerResponse);
+            logger.info("Fetched customer : {}", customerResponse);
             return customerResponse;
         } else {
             logger.error("Customer not found for customer ID: {}", customer_id);
@@ -69,13 +74,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public List<Customer> createCustomersWithAccounts(List<Customer> customers) {
-        logger.info("Creating customers with accounts: {}", customers);
+        logger.info("Creating customers with accounts : {}", customers);
         List<Customer> savedCustomers = new ArrayList<>();
         for (Customer customer : customers) {
             Customer savedCustomer = createCustomerWithAccounts(customer);
             savedCustomers.add(savedCustomer);
         }
-        logger.info("Customers created successfully: {}", savedCustomers);
+        logger.info("Customers created successfully : {}", savedCustomers);
         return savedCustomers;
     }
 
@@ -103,17 +108,42 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomer(long customerId) {
-        logger.info("Deleting customer with customer ID: {}", customerId);
-        customerRepository.deleteById(customerId);
-        logger.info("Customer deleted successfully");
+        try {
+            logger.info("Deleting customer with customer ID: {}", customerId);
+            customerRepository.deleteById(customerId);
+            logger.info("Customer deleted successfully");
+        } catch (Exception e) {
+            logger.error("An error occurred while deleting customer with customer ID: {}", customerId, e);
+        }
     }
 
     @Override
-    public List<CustomerResponse> getCustomersByFirstLetterOfName(char firstLetter) {
-        logger.info("Fetching customers with first letter of name: {}", firstLetter);
-        List<Customer> customers = customerRepository.findByCustNameStartingWithIgnoreCase(firstLetter);
-        List<CustomerResponse> customerResponses = Collections.singletonList(customerMapper.convertToResponse((Customer) customers));
-        logger.info("Fetched customers: {}", customerResponses);
-        return customerResponses;
+    public List<CustomerResponse> getCustomersByFirstLetterOfName(char letter) {
+        List<Customer> customers = customerRepository.findByCustNameStartingWithIgnoreCase(letter);
+        return customers.stream()
+                .map(this::mapToCustomerResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    private CustomerResponse mapToCustomerResponse(Customer customer) {
+        CustomerResponse response = new CustomerResponse();
+        response.setCust_id(Math.toIntExact(customer.getCust_id()));
+        response.setCust_name(customer.getCust_name());
+        response.setVerification_documents(customer.isVerification_documents());
+        response.setCust_mail(customer.getCust_mail());
+        response.setAccountList(customer.getAccountList().stream().map(account -> {
+            AccountResponse accountResponse = new AccountResponse();
+            accountResponse.setAccount_id(account.getAccount_id());
+            accountResponse.setAccount_type(account.getAccount_type());
+            accountResponse.setBalance(account.getBalance());
+            return accountResponse;
+        }).collect(Collectors.toList()));
+        // Map other fields as needed
+        return response;
     }
 }

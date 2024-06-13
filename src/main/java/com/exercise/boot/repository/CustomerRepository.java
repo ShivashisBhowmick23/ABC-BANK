@@ -15,7 +15,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findCustomerByAccountId(@Param("accountId") long accountId);
 
     @Query("SELECT c FROM Customer c WHERE LOWER(c.cust_name) LIKE CONCAT(:letter, '%')")
-    List<Customer> findByCustNameStartingWithIgnoreCase(@Param("letter") char letter);
+    List<Customer> findByCustNameStartingWithIgnoreCase(char letter);
 
 }
 

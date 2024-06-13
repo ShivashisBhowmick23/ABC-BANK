@@ -93,37 +93,32 @@ public class CustomerController {
 
     @GetMapping("/customer/{customer_id}")
     public ResponseEntity<CustomerResponse> getCustomerByCustomerId(@PathVariable long customer_id) {
-        logger.info("Fetching customer by customer ID: {}", customer_id);
+        logger.info("Fetching customer by customer  ID:   {}", customer_id);
         CustomerResponse response = customerService.getCustomerByCustomerId(customer_id);
         logger.info("Customer found with the customer ID: {}", response);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/customer/{customer_id}")
-    public ResponseEntity<?> updateCustomer(@PathVariable("customer_id") long customerId,
-                                            @RequestBody CustomerRequest updatedCustomerRequest) {
+    public ResponseEntity<?> updateCustomer(@PathVariable("customer_id") long customerId, @RequestBody CustomerRequest updatedCustomerRequest) {
         try {
-            logger.info("Fetching customer by customer ID: {}", customerId);
+            logger.info("Fetching customer by customer ID:   {}", customerId);
             CustomerResponse customerResponse = customerService.getCustomerByCustomerId(customerId);
-            logger.info("Customer found: {}", customerResponse);
+            logger.info("Customer  found:  {}", customerResponse);
 
             // Convert updatedCustomerRequest to Customer entity
             Customer updatedCustomer = customerMapper.convertToEntity(updatedCustomerRequest);
 
-            // Copy relevant fields from customerResponse to updatedCustomer
-            // Assuming you only update specific fields like cust_name, cust_mail, verification_documents, and accountList
             updatedCustomer.setCust_name(customerResponse.getCust_name());
             updatedCustomer.setCust_mail(customerResponse.getCust_mail());
             updatedCustomer.setVerification_documents(customerResponse.isVerification_documents());
-            updatedCustomer.setAccountList(customerResponse.getAccountList().stream()
-                    .map(accountResponse -> {
-                        Account account = new Account();
-                        account.setAccount_id(accountResponse.getAccount_id());
-                        account.setAccount_type(accountResponse.getAccount_type());
-                        account.setBalance(accountResponse.getBalance());
-                        return account;
-                    })
-                    .toList()); // Requires Java 16 or later, use .collect(Collectors.toList()) for earlier versions
+            updatedCustomer.setAccountList(customerResponse.getAccountList().stream().map(accountResponse -> {
+                Account account = new Account();
+                account.setAccount_id(accountResponse.getAccount_id());
+                account.setAccount_type(accountResponse.getAccount_type());
+                account.setBalance(accountResponse.getBalance());
+                return account;
+            }).toList()); // Requires Java 16 or later, use .collect(Collectors.toList()) for earlier versions
 
             // Update the customer using the service
             Customer savedCustomer = customerService.updateCustomer(updatedCustomer);
@@ -165,12 +160,24 @@ public class CustomerController {
             logger.info("Fetching customers whose name starts with: {}", letter);
             List<CustomerResponse> customers = customerService.getCustomersByFirstLetterOfName(letter);
             logger.info("Found {} customers", customers.size());
+
             return ResponseEntity.ok(customers);
         } catch (CustomerNotFoundException e) {
             logger.error("No customers found whose name starts with: {}", letter);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArrayList<>());
         } catch (Exception e) {
             logger.error("An error occurred while fetching customers by first letter of name: {}", letter, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
+    }
+
+    @GetMapping("/customers")
+    public ResponseEntity<List<Customer>> getAllCustomers() {
+        try {
+            List<Customer> customers = customerService.getAllCustomers();
+            return ResponseEntity.ok(customers);
+        } catch (Exception e) {
+            logger.error("An error occurred while fetching all customers", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }

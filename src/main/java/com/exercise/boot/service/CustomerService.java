@@ -23,6 +23,6 @@ public interface CustomerService {
 
     List<CustomerResponse> getCustomersByFirstLetterOfName(char letter);
 
-
+    List<Customer> getAllCustomers();
 }
 
