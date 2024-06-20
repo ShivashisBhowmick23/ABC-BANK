@@ -9,6 +9,10 @@ import com.exercise.boot.request.CustomerListRequest;
 import com.exercise.boot.request.CustomerRequest;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.service.CustomerService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bank")
+@ApiResponses({@ApiResponse(responseCode = "200", description = "OK"), @ApiResponse(responseCode = "400", description = "Bad Request"), @ApiResponse(responseCode = "500", description = "Internal Server Error"), @ApiResponse(responseCode = "404", description = "Not Found")})
 //@EnableDiscoveryClient while registering in Eureka server we need to use @EnableDiscoveryClient
 public class CustomerController {
 
@@ -32,6 +37,10 @@ public class CustomerController {
     private CustomerMapper customerMapper;
 
     @PostMapping("/add/single-customer")
+    @Operation(summary = "Create customer", description = "Create customer")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),
+
+    })
     public ResponseEntity<?> createCustomer(@RequestBody CustomerRequest customerRequest) {
         if (!customerRequest.isVerification_documents()) {
             logger.error("Verification document cannot be false for customer: {}", customerRequest);
@@ -52,6 +61,8 @@ public class CustomerController {
     }
 
     @GetMapping(BankURLConstant.GET_CUSTOMER_BY_ACC_ID)
+    @Operation(summary = "Get customer by account id", description = "Get customer by account id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer found successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),})
     public ResponseEntity<?> getCustomerByAccountId(@PathVariable long accountId) {
         try {
             logger.info("Fetching customer by account ID: {}", accountId);
@@ -68,6 +79,8 @@ public class CustomerController {
     }
 
     @PostMapping("/add/multiple-customers")
+    @Operation(summary = "Create multiple customers", description = "Create multiple customers")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customers created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"),})
     public ResponseEntity<?> addMultipleCustomers(@RequestBody CustomerListRequest customerListRequest) {
         List<CustomerRequest> customerRequestList = customerListRequest.getCustomers();
 
@@ -92,6 +105,8 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/{customer_id}")
+    @Operation(summary = "Get customer by customer id", description = "Get customer by customer id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer found successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),})
     public ResponseEntity<CustomerResponse> getCustomerByCustomerId(@PathVariable long customer_id) {
         logger.info("Fetching customer by customer  ID:   {}", customer_id);
         CustomerResponse response = customerService.getCustomerByCustomerId(customer_id);
@@ -100,6 +115,8 @@ public class CustomerController {
     }
 
     @PutMapping("/customer/{customer_id}")
+    @Operation(summary = "Update customer by customer id", description = "Update customer by customer id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer updated successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),})
     public ResponseEntity<?> updateCustomer(@PathVariable("customer_id") long customerId, @RequestBody CustomerRequest updatedCustomerRequest) {
         try {
             logger.info("Fetching customer by customer ID:   {}", customerId);
@@ -138,6 +155,8 @@ public class CustomerController {
     }
 
     @DeleteMapping("/delete/customer/{customer_id}")
+    @Operation(summary = "Delete customer by customer id", description = "Delete customer by customer id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer deleted successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),})
     public ResponseEntity<?> deleteCustomer(@PathVariable("customer_id") long customerId) {
         try {
             logger.info("Deleting customer with ID: {}", customerId);
@@ -155,6 +174,8 @@ public class CustomerController {
     }
 
     @GetMapping("/customers/starts-with/{letter}")
+    @Operation(summary = "Get customers by first letter of name", description = "Get customers by first letter of name")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customers found successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"),})
     public ResponseEntity<List<CustomerResponse>> getCustomersByFirstLetterOfName(@PathVariable("letter") char letter) {
         try {
             logger.info("Fetching customers whose name starts with: {}", letter);
@@ -172,6 +193,8 @@ public class CustomerController {
     }
 
     @GetMapping("/customers")
+    @Operation(summary = "Get all customers", description = "Get all customers")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customers found successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"),})
     public ResponseEntity<List<Customer>> getAllCustomers() {
         try {
             List<Customer> customers = customerService.getAllCustomers();
