@@ -9,7 +9,6 @@ import com.exercise.boot.request.CustomerListRequest;
 import com.exercise.boot.request.CustomerRequest;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.service.CustomerService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -107,11 +106,19 @@ public class CustomerController {
     @GetMapping("/customer/{customer_id}")
     @Operation(summary = "Get customer by customer id", description = "Get customer by customer id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer found successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),})
-    public ResponseEntity<CustomerResponse> getCustomerByCustomerId(@PathVariable long customer_id) {
-        logger.info("Fetching customer by customer  ID:   {}", customer_id);
-        CustomerResponse response = customerService.getCustomerByCustomerId(customer_id);
-        logger.info("Customer found with the customer ID: {}", response);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> getCustomerByCustomerId(@PathVariable long customer_id) {
+        try {
+            logger.info("Fetching customer by customer ID  : {}", customer_id);
+            CustomerResponse customerResponse = customerService.getCustomerByCustomerId(customer_id);
+            logger.info("Customer found : {}", customerResponse);
+            return ResponseEntity.ok(customerResponse);
+        } catch (CustomerNotFoundException e) {
+            logger.error("Customer not found for customer ID : {}", customer_id);
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("An error occurred while fetching customer by customer ID: {}", customer_id, e);
+            return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
+        }
     }
 
     @PutMapping("/customer/{customer_id}")

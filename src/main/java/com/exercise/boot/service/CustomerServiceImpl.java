@@ -65,13 +65,15 @@ public class CustomerServiceImpl implements CustomerService {
         if (customerOpt.isPresent()) {
             Customer customer = customerOpt.get();
             CustomerResponse customerResponse = customerMapper.convertToResponse(customer);
-            logger.info("Fetched customer : {}", customerResponse);
+            logger.info("Fetched customer: {}", customerResponse);
             return customerResponse;
         } else {
-            logger.error("Customer not found for customer ID: {}", customer_id);
-            throw new CustomerNotFoundException("Customer not found for customer ID: " + customer_id);
+            String errorMessage = "Customer not found for customer ID: " + customer_id;
+            logger.error(errorMessage);
+            throw new CustomerNotFoundException(errorMessage);
         }
     }
+
 
     public List<Customer> createCustomersWithAccounts(List<Customer> customers) {
         logger.info("Creating customers with accounts : {}", customers);

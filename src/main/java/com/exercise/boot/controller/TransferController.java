@@ -31,7 +31,7 @@ public class TransferController {
     private TransferMapper transferMapper;
 
     @PostMapping
-    @Operation(summary = "Create transfer",description = "Create transfer")
+    @Operation(summary = "Create transfer", description = "Create transfer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfer created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -48,7 +48,7 @@ public class TransferController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get transfer by id",description = "Get transfer by id")
+    @Operation(summary = "Get transfer by id", description = "Get transfer by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfer retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -64,7 +64,7 @@ public class TransferController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all transfers for today",description = "Get all transfers for today")
+    @Operation(summary = "Get all transfers for today", description = "Get all transfers for today")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfers retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -81,7 +81,7 @@ public class TransferController {
     }
 
     @GetMapping("/fromAccount/{fromAccountId}")
-    @Operation(summary = "Get transfers by fromAccountId",description = "Get transfers by fromAccountId")
+    @Operation(summary = "Get transfers by fromAccountId", description = "Get transfers by fromAccountId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfers retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -98,7 +98,7 @@ public class TransferController {
     }
 
     @GetMapping("/toAccount/{toAccountId}")
-    @Operation(summary = "Get transfers by toAccountId",description = "Get transfers by toAccountId")
+    @Operation(summary = "Get transfers by toAccountId", description = "Get transfers by toAccountId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfers retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -115,7 +115,7 @@ public class TransferController {
     }
 
     @GetMapping("/type/{transferType}")
-    @Operation(summary = "Get transfers by transferType",description = "Get transfers by transferType")
+    @Operation(summary = "Get transfers by transferType", description = "Get transfers by transferType")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfers retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -132,7 +132,7 @@ public class TransferController {
     }
 
     @GetMapping("/date/{date}")
-    @Operation(summary = "Get transfers by date",description = "Get transfers by date")
+    @Operation(summary = "Get transfers by date", description = "Get transfers by date")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfers retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -150,7 +150,7 @@ public class TransferController {
     }
 
     @GetMapping("/betweenDates")
-    @Operation(summary = "Get transfers between two dates",description = "Get transfers between two dates")
+    @Operation(summary = "Get transfers between two dates", description = "Get transfers between two dates")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transfers retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),

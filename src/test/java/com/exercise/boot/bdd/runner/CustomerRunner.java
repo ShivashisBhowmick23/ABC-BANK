@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/resources/features/CustomerController.feature",
         glue = {"com.exercise.boot.bdd.steps", "com.exercise.boot.bdd.config"},
-        plugin = {"pretty", "html:target/cucumber"})
+        plugin = {"pretty", "html:target/cucumber.html", "json:target/cucumber.json"},
+//        tags = "@getCustomerByID",
+        publish = true)
 public class CustomerRunner {
 }

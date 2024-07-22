@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    @Query(value = "SELECT c FROM Customer c JOIN c.accountList a WHERE a.account_id = :accountId", nativeQuery = true)
+    @Query("SELECT c FROM Customer c JOIN FETCH c.accountList a WHERE a.account_id = :accountId")
     Optional<Customer> findCustomerByAccountId(@Param("accountId") long accountId);
 
     @Query("SELECT c FROM Customer c WHERE LOWER(c.cust_name) LIKE CONCAT(:letter, '%')")

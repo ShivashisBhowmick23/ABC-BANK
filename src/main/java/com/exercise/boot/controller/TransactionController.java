@@ -31,7 +31,7 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @PostMapping("/create")
-    @Operation(summary = "Create transaction",description = "Create transaction")
+    @Operation(summary = "Create transaction", description = "Create transaction")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -46,7 +46,7 @@ public class TransactionController {
     }
 
     @GetMapping(BankURLConstant.GET_TRANSACTION_BY_ACC_ID)
-    @Operation(summary = "Get transactions by account id",description = "Get transactions by account id")
+    @Operation(summary = "Get transactions by account id", description = "Get transactions by account id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -61,7 +61,7 @@ public class TransactionController {
     }
 
     @GetMapping("/by-date")
-    @Operation(summary = "Get transactions by date",description = "Get transactions by date")
+    @Operation(summary = "Get transactions by date", description = "Get transactions by date")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -86,7 +86,7 @@ public class TransactionController {
     }
 
     @GetMapping("/by-transaction-type")
-    @Operation(summary = "Get transactions by transaction type",description = "Get transactions by transaction type")
+    @Operation(summary = "Get transactions by transaction type", description = "Get transactions by transaction type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
@@ -114,7 +114,7 @@ public class TransactionController {
     }
 
     @GetMapping("/by-account-id-and-transaction-type/{accountId}")
-    @Operation(summary = "Get transactions by account id and transaction type",description = "Get transactions by account id and transaction type")
+    @Operation(summary = "Get transactions by account id and transaction type", description = "Get transactions by account id and transaction type")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid request"),
