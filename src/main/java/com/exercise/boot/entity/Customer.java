@@ -16,7 +16,7 @@ public class Customer {
     private boolean verification_documents;
     private String cust_mail;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true)
     @JoinColumn(name = "cust_id")
     private List<Account> accountList;
 

@@ -211,8 +211,19 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }
-
-
+    @PutMapping("/customers/update/name/{id}")
+    @Operation(summary = "Update customer only name by id", description = "Update customer only name by id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Customer update successful"),@ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
+    public ResponseEntity<CustomerResponse> updateCustomerOnlyNameById(@RequestParam Long id, @RequestBody String name) {
+        try {
+            customerService.updateCustomerOnlyNameById(id, name);
+            CustomerResponse customerResponse = customerService.getCustomerByCustomerId(id);
+            return ResponseEntity.ok(customerResponse);
+        } catch (CustomerNotFoundException e) {
+            logger.error("Customer not found for  ID: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 }
 
 

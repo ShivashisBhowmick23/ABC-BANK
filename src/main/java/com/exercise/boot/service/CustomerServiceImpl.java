@@ -4,6 +4,7 @@ import com.exercise.boot.entity.Account;
 import com.exercise.boot.entity.Customer;
 import com.exercise.boot.exception.CustomerNotFoundException;
 import com.exercise.boot.mapper.CustomerMapper;
+import com.exercise.boot.repository.AccountRepository;
 import com.exercise.boot.repository.CustomerRepository;
 import com.exercise.boot.response.AccountResponse;
 import com.exercise.boot.response.CustomerResponse;
@@ -29,6 +30,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private CustomerMapper customerMapper;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Autowired
     private AccountUtil accountUtil;
@@ -39,6 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
         for (Account account : customer.getAccountList()) {
             long accountId = accountUtil.generateRandomAccountId(random);
             account.setAccount_id(accountId);
+            accountRepository.save(account);
             logger.info("Generated account ID: {} for customer: {}", accountId, customer.getCust_id());
         }
         Customer savedCustomer = customerRepository.save(customer);
@@ -103,7 +107,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer updateCustomer(Customer customer) {
         logger.info("Updating customer: {}", customer);
-        Customer updatedCustomer = customerRepository.save(customer);
+        Customer updatedCustomer = customerRepository.saveAndFlush(customer);
         logger.info("Customer updated successfully: {}", updatedCustomer);
         return updatedCustomer;
     }
@@ -130,6 +134,18 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
+    }
+
+    @Override
+    public String updateCustomerOnlyNameById(Long id, String name) {
+        Customer customer = customerRepository.findById(id).orElse(null);
+        if (customer != null) {
+            customer.setCust_name(name);
+            customerRepository.save(customer);
+            return "Customer updated successfully";
+        } else {
+            return "Customer not found";
+        }
     }
 
     private CustomerResponse mapToCustomerResponse(Customer customer) {
