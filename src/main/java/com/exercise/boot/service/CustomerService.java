@@ -9,13 +9,13 @@ import java.util.List;
 @Service
 public interface CustomerService {
 
-     Customer createCustomerWithAccounts(Customer customer);
+    Customer createCustomerWithAccounts(Customer customer);
 
-     List<Customer> createCustomerWithAccounts(List<Customer> customerList);
+    List<Customer> createCustomerWithAccounts(List<Customer> customerList);
 
-     CustomerResponse getCustomerByCustomerId(long customer_id);
+    CustomerResponse getCustomerByCustomerId(long customer_id);
 
-     CustomerResponse getCustomerByAccountId(long accountId);
+    CustomerResponse getCustomerByAccountId(long accountId);
 
     Customer updateCustomer(Customer customer);
 
@@ -26,5 +26,7 @@ public interface CustomerService {
     List<Customer> getAllCustomers();
 
     String updateCustomerOnlyNameById(Long id, String name);
+
+    String updateCustomerMailById(Long id, String mail);
 }
 

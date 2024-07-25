@@ -9,6 +9,7 @@ import com.exercise.boot.repository.CustomerRepository;
 import com.exercise.boot.response.AccountResponse;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.util.AccountUtil;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
         return savedCustomers;
     }
 
+    @Transactional
     @Override
     public CustomerResponse getCustomerByCustomerId(long customer_id) {
         logger.info("Fetching customer with customer ID: {}", customer_id);
@@ -143,6 +145,18 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setCust_name(name);
             customerRepository.save(customer);
             return "Customer updated successfully";
+        } else {
+            return "Customer not found";
+        }
+    }
+
+    @Override
+    public String updateCustomerMailById(Long id, String mail) {
+        Customer customer = customerRepository.findById(id).orElse(null);
+        if (customer != null) {
+            customer.setCust_mail(mail);
+            customerRepository.save(customer);
+            return "Customer mail_id updated successfully";
         } else {
             return "Customer not found";
         }

@@ -12,6 +12,7 @@ import com.exercise.boot.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -211,16 +212,31 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }
+
     @PutMapping("/customers/update/name/{id}")
     @Operation(summary = "Update customer only name by id", description = "Update customer only name by id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Customer update successful"),@ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
-    public ResponseEntity<CustomerResponse> updateCustomerOnlyNameById(@RequestParam Long id, @RequestBody String name) {
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer update successful"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
+    public ResponseEntity<CustomerResponse> updateCustomerOnlyNameById(@RequestParam Long id, @Valid @RequestBody String name) {
         try {
             customerService.updateCustomerOnlyNameById(id, name);
             CustomerResponse customerResponse = customerService.getCustomerByCustomerId(id);
             return ResponseEntity.ok(customerResponse);
         } catch (CustomerNotFoundException e) {
             logger.error("Customer not found for  ID: {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PutMapping("/customers/update/mail/{id}")
+    @Operation(summary = "Update customer only mail by id", description = "Update customer only mail by id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer update successful"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
+    public ResponseEntity<CustomerResponse> updateCustomerMailById(@RequestParam Long id, @Valid @RequestBody String mail) {
+        try {
+            customerService.updateCustomerMailById(id, mail);
+            CustomerResponse customerResponse = customerService.getCustomerByCustomerId(id);
+            return ResponseEntity.ok(customerResponse);
+        } catch (CustomerNotFoundException e) {
+            logger.error("Customer not found of  ID: {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }

@@ -55,7 +55,7 @@ Feature: Customer Management
     And the customer details by customer ID are returned
     Examples:
       | customerId |
-      | 1          |
+      | 12         |
 
   @get @error
   Scenario Outline: Get customer by non-existent customer ID
