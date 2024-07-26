@@ -1,6 +1,6 @@
 package com.exercise.boot.entity;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 import java.util.List;

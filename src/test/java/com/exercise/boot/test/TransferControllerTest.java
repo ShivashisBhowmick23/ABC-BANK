@@ -1,4 +1,4 @@
-package com.exercise.boot;
+package com.exercise.boot.test;
 
 import com.exercise.boot.controller.TransferController;
 import com.exercise.boot.entity.Transfer;

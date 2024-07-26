@@ -12,7 +12,8 @@ import com.exercise.boot.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bank")
@@ -86,19 +88,19 @@ public class CustomerController {
 
         logger.info("Received request to add multiple customers: {}", customerRequestList.size());
 
-        List<CustomerRequest> validCustomerRequests = customerRequestList.stream().filter(CustomerRequest::isVerification_documents).toList();
+        List<CustomerRequest> validCustomerRequests = customerRequestList.stream().filter(CustomerRequest::isVerification_documents).collect(Collectors.toList());
 
         if (validCustomerRequests.size() != customerRequestList.size()) {
             logger.error("Some customer requests do not have verification documents");
             return ResponseEntity.badRequest().body("Some customer requests do not have verification documents.");
         }
 
-        List<Customer> customers = validCustomerRequests.stream().map(customerMapper::convertToEntity).toList();
+        List<Customer> customers = validCustomerRequests.stream().map(customerMapper::convertToEntity).collect(Collectors.toList());
 
         List<Customer> savedCustomers = customerService.createCustomerWithAccounts(customers);
         logger.info("Created {} customers with accounts", savedCustomers.size());
 
-        List<CustomerResponse> customerResponses = savedCustomers.stream().map(customerMapper::convertToResponse).toList();
+        List<CustomerResponse> customerResponses = savedCustomers.stream().map(customerMapper::convertToResponse).collect(Collectors.toList());
 
         logger.info("Returning customer responses");
         return ResponseEntity.ok(customerResponses);
@@ -143,7 +145,7 @@ public class CustomerController {
                 account.setAccount_type(accountResponse.getAccount_type());
                 account.setBalance(accountResponse.getBalance());
                 return account;
-            }).toList()); // Requires Java 16 or later, use .collect(Collectors.toList()) for earlier versions
+            }).collect(Collectors.toList())); // Requires Java 16 or later, use .collect(Collectors.toList()) for earlier versions
 
             // Update the customer using the service
             Customer savedCustomer = customerService.updateCustomer(updatedCustomer);

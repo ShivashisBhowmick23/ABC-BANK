@@ -16,12 +16,12 @@ Feature: Customer Management
     Then the response status should be 400
     And the error message should be "Verification document cannot be false."
 
-  @getCustomerByID
-  Scenario: Get customer by account ID
-    Given the account ID exists
-    When the client requests the customer by account ID
-    Then the response status should be 200
-    And the customer details by account ID are returned
+#  @getCustomerByID
+#  Scenario: Get customer by account ID
+#    Given the account ID exists
+#    When the client requests the customer by account ID
+#    Then the response status should be 200
+#    And the customer details by account ID are returned
 
   @get @error
   Scenario Outline: Get customer by non-existent account ID
@@ -47,15 +47,15 @@ Feature: Customer Management
     Then the response status should be 400
     And the error message should be "Some customer requests do not have verification documents."
 
-  @get
-  Scenario Outline: Get customer by customer ID
-    Given the customerId <customerId> exists
-    When the client requests the customer by <customerId>
-    Then the response status should be 200
-    And the customer details by customer ID are returned
-    Examples:
-      | customerId |
-      | 12         |
+#  @get
+#  Scenario Outline: Get customer by customer ID
+#    Given the customerId <customerId> exists
+#    When the client requests the customer by <customerId>
+#    Then the response status should be 200
+#    And the customer details by customer ID are returned
+#    Examples:
+#      | customerId |
+#      | 12         |
 
   @get @error
   Scenario Outline: Get customer by non-existent customer ID

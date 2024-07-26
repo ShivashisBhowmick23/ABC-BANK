@@ -1,8 +1,6 @@
 package com.exercise.boot.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import javax.persistence.*;
 import lombok.Data;
 
 @Data

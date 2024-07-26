@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferServiceImpl implements TransferService {
@@ -45,7 +46,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Fetching transfers with fromAccountId: {}", fromAccountId);
         List<Transfer> transfers = transferRepository.findAll().stream()
                 .filter(transfer -> transfer.getFromAccountId() == fromAccountId)
-                .toList();
+                .collect(Collectors.toList());
         logger.info("Fetched transfers by fromAccount id: {}", transfers);
         return transfers;
     }
@@ -55,7 +56,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Fetching transfers with transferType: {}", transferType);
         List<Transfer> transfers = transferRepository.findAll().stream()
                 .filter(transfer -> transfer.getTransferType().equalsIgnoreCase(transferType))
-                .toList();
+                .collect(Collectors.toList());
         logger.info("Fetched transfers by TransferType : {}", transfers);
         return transfers;
     }
@@ -65,7 +66,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Fetching transfers with date: {}", date);
         List<Transfer> transfers = transferRepository.findAll().stream()
                 .filter(transfer -> transfer.getTransferDate().isEqual(date))
-                .toList();
+                .collect(Collectors.toList());
         logger.info("Fetched transfers by Date : {}", transfers);
         return transfers;
     }
@@ -75,7 +76,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Fetching transfers with toAccountId: {}", toAccountId);
         List<Transfer> transfers = transferRepository.findAll().stream()
                 .filter(transfer -> transfer.getToAccountId() == toAccountId)
-                .toList();
+                .collect(Collectors.toList());
         logger.info("Fetched transfers toAccountId: {}", transfers);
         return transfers;
     }
@@ -85,7 +86,7 @@ public class TransferServiceImpl implements TransferService {
         logger.info("Fetching transfers between dates: {} and {}", fromDate, toDate);
         List<Transfer> transfers = transferRepository.findAll().stream()
                 .filter(transfer -> !transfer.getTransferDate().isBefore(fromDate) && !transfer.getTransferDate().isAfter(toDate))
-                .toList();
+                .collect(Collectors.toList());
         logger.info("Fetched transfers by to date and from date: {}", transfers);
         return transfers;
     }
