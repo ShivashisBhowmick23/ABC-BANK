@@ -9,12 +9,12 @@ import com.exercise.boot.repository.CustomerRepository;
 import com.exercise.boot.response.AccountResponse;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.util.AccountUtil;
-import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
