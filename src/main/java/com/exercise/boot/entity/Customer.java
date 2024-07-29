@@ -1,6 +1,8 @@
 package com.exercise.boot.entity;
 
+
 import lombok.Data;
+
 
 import javax.persistence.*;
 import java.util.List;

@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.6.6'
+    id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.1.4'
     id "io.gatling.gradle" version "3.9.5"
 }
@@ -9,8 +9,8 @@ group = 'com.exercise.boot'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
@@ -22,6 +22,7 @@ configurations {
 repositories {
     mavenCentral()
 }
+
 sourceSets {
     gatling {
         java {
@@ -34,17 +35,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
-    annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2:2.1.214'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-
-    // Swagger OPEN API Dependency
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    // Swagger OpenAPI Dependency
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
 
     // Cucumber
     testImplementation 'io.cucumber:cucumber-java:7.2.3'
@@ -52,9 +52,9 @@ dependencies {
     testImplementation 'io.cucumber:cucumber-junit:7.2.3'
 
     // Gatling
-    testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.9.5'
-    testImplementation 'io.gatling:gatling-app:3.9.5'
-    testImplementation 'io.gatling:gatling-recorder:3.9.5'
+    testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.8.4'
+    testImplementation 'io.gatling:gatling-app:3.8.4'
+    testImplementation 'io.gatling:gatling-recorder:3.8.4'
 }
 
 tasks.named('test') {
