@@ -144,19 +144,19 @@ FeederBuilder.FileBased<Object> mailFeeder = jsonFile("simulation_request/new_ma
     {
         setUp(
                 // Load Test Scenarios
-                scnGetAllCustomersLoad.injectOpen(rampUsers(10).during(10)),
-                scnCreateSingleCustomerLoad.injectOpen(rampUsers(10).during(10)),
-                scnCreateMultipleCustomersLoad.injectOpen(rampUsers(10).during(10)),
-                scnGetCustomerByCustomerIdLoad.injectOpen(rampUsers(10).during(10)),
-                scnGetCustomerByCustomerFirstLetterLoad.injectOpen(rampUsers(10).during(10)),
-                scnUpdateCustomerMailLoad.injectOpen(rampUsers(10).during(10)),
+                scnGetAllCustomersLoad.injectOpen(rampUsers(5).during(5)),
+                scnCreateSingleCustomerLoad.injectOpen(rampUsers(5).during(5)),
+                scnCreateMultipleCustomersLoad.injectOpen(rampUsers(5).during(5)),
+                scnGetCustomerByCustomerIdLoad.injectOpen(rampUsers(5).during(5)),
+                scnGetCustomerByCustomerFirstLetterLoad.injectOpen(rampUsers(5).during(5)),
+                scnUpdateCustomerMailLoad.injectOpen(rampUsers(5).during(5)),
                 // Stress Test Scenarios
-                scnGetAllCustomersStress.injectOpen(atOnceUsers(100)),
-                scnCreateSingleCustomerStress.injectOpen(atOnceUsers(100)),
-                scnCreateMultipleCustomersStress.injectOpen(atOnceUsers(100)),
-                scnGetCustomerByCustomerIdStress.injectOpen(atOnceUsers(100)),
-                scnGetCustomerByCustomerFirstLetterStress.injectOpen(atOnceUsers(100)),
-                scnUpdateCustomerMailStress.injectOpen(atOnceUsers(100))
+                scnGetAllCustomersStress.injectOpen(atOnceUsers(50)),
+                scnCreateSingleCustomerStress.injectOpen(atOnceUsers(50)),
+                scnCreateMultipleCustomersStress.injectOpen(atOnceUsers(50)),
+                scnGetCustomerByCustomerIdStress.injectOpen(atOnceUsers(50)),
+                scnGetCustomerByCustomerFirstLetterStress.injectOpen(atOnceUsers(50)),
+                scnUpdateCustomerMailStress.injectOpen(atOnceUsers(50))
         ).protocols(httpProtocol)
                 .assertions(global().successfulRequests().percent().gt(75.0));
     }

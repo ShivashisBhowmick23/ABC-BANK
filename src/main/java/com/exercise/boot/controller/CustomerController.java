@@ -87,19 +87,19 @@ public class CustomerController {
 
         logger.info("Received request to add multiple customers: {}", customerRequestList.size());
 
-        List<CustomerRequest> validCustomerRequests = customerRequestList.stream().filter(CustomerRequest::isVerification_documents).collect(Collectors.toList());
+        List<CustomerRequest> validCustomerRequests = customerRequestList.stream().filter(CustomerRequest::isVerification_documents).toList();
 
         if (validCustomerRequests.size() != customerRequestList.size()) {
             logger.error("Some customer requests do not have verification documents");
             return ResponseEntity.badRequest().body("Some customer requests do not have verification documents.");
         }
 
-        List<Customer> customers = validCustomerRequests.stream().map(customerMapper::convertToEntity).collect(Collectors.toList());
+        List<Customer> customers = validCustomerRequests.stream().map(customerMapper::convertToEntity).toList();
 
         List<Customer> savedCustomers = customerService.createCustomerWithAccounts(customers);
         logger.info("Created {} customers with accounts", savedCustomers.size());
 
-        List<CustomerResponse> customerResponses = savedCustomers.stream().map(customerMapper::convertToResponse).collect(Collectors.toList());
+        List<CustomerResponse> customerResponses = savedCustomers.stream().map(customerMapper::convertToResponse).toList();
 
         logger.info("Returning customer responses");
         return ResponseEntity.ok(customerResponses);
@@ -217,14 +217,22 @@ public class CustomerController {
     @PutMapping("/customers/update/name/{id}")
     @Operation(summary = "Update customer only name by id", description = "Update customer only name by id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer update successful"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
-    public ResponseEntity<CustomerResponse> updateCustomerOnlyNameById(@RequestParam Long id, @Valid @RequestBody String name) {
+    public ResponseEntity<CustomerResponse> updateCustomerOnlyNameById(@PathVariable("id") Long id, @Valid @RequestBody String name) {
+        logger.debug("Received request to update customer name by id: {}", id);
+
         try {
+            logger.debug("Updating customer name by id: {}", id);
             customerService.updateCustomerOnlyNameById(id, name);
+            logger.debug("Customer name updated successfully for id: {}", id);
             CustomerResponse customerResponse = customerService.getCustomerByCustomerId(id);
+            logger.debug("Fetched customer response for id:: {}", id);
             return ResponseEntity.ok(customerResponse);
         } catch (CustomerNotFoundException e) {
-            logger.error("Customer not found for  ID: {}", id);
+            logger.error("Customer not found of ID: {}", id, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            logger.error("An error occurred while updating customer name for ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -232,13 +240,20 @@ public class CustomerController {
     @Operation(summary = "Update customer only mail by id", description = "Update customer only mail by id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer update successful"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
     public ResponseEntity<CustomerResponse> updateCustomerMailById(@PathVariable("id") Long id, @Valid @RequestBody String mail) {
+        logger.debug("Received request to update customer mail by id: {}", id);
         try {
+            logger.info("Updating customer mail by id: {}", id);
             customerService.updateCustomerMailById(id, mail);
+            logger.info("Customer mail updated successfully for id: {}", id);
             CustomerResponse customerResponse = customerService.getCustomerByCustomerId(id);
+            logger.debug("Fetched customer response for id: {}", id);
             return ResponseEntity.ok(customerResponse);
         } catch (CustomerNotFoundException e) {
-            logger.error("Customer not found of  ID: {}", id);
+            logger.error("Customer not found of ID: {}", id, e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            logger.error("An error occurred while updating customer mail for ID: {}", id, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }
