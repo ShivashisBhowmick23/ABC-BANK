@@ -231,7 +231,7 @@ public class CustomerController {
     @PutMapping("/customers/update/mail/{id}")
     @Operation(summary = "Update customer only mail by id", description = "Update customer only mail by id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer update successful"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found")})
-    public ResponseEntity<CustomerResponse> updateCustomerMailById(@RequestParam Long id, @Valid @RequestBody String mail) {
+    public ResponseEntity<CustomerResponse> updateCustomerMailById(@PathVariable("id") Long id, @Valid @RequestBody String mail) {
         try {
             customerService.updateCustomerMailById(id, mail);
             CustomerResponse customerResponse = customerService.getCustomerByCustomerId(id);

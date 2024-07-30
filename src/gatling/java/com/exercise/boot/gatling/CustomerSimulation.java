@@ -20,7 +20,7 @@ public class CustomerSimulation extends Simulation {
 
     FeederBuilder.FileBased<Object> customerIdsFeeder = jsonFile("simulation_request/customer_ids.json").circular();
     FeederBuilder.FileBased<Object> lettersFeeder = jsonFile("simulation_request/letters.json").circular();
-
+FeederBuilder.FileBased<Object> mailFeeder = jsonFile("simulation_request/new_mail.json").circular();
 
     // Define HTTP protocol
     HttpProtocolBuilder httpProtocol = http.baseUrl("http://localhost:8080")
@@ -89,6 +89,57 @@ public class CustomerSimulation extends Simulation {
                     .get("/bank/customers/starts-with/#{letter}")
                     .check(status().is(200)));
 
+    ScenarioBuilder scnUpdateCustomerMailLoad = scenario("Update Customer Mail - Load")
+            .feed(customerIdsFeeder)
+            .feed(mailFeeder)
+            .exec(session -> {
+                String customerId = session.getString("customer_id");
+                String mail = session.getString("mail");
+                System.out.println("Updating customer with ID: " + customerId + " to mail: " + mail);
+                return session;
+            })
+            .exec(http("Update Customer Mail")
+                    .put("/bank/customers/update/mail/#{customer_id}?id=#{customer_id}")
+                    .header("Content-Type", "application/json")
+                    .body(StringBody(session -> {
+                        String mail = session.getString("mail");
+                        return "{\"mail\": \"" + mail + "\"}";
+                    }))
+                    .check(status().is(200))
+                    .check(bodyString().saveAs("responseBody"))
+            )
+            .exec(session -> {
+                String responseBody = session.getString("responseBody");
+                System.out.println("Response: " + responseBody);
+                return session;
+            });
+
+    ScenarioBuilder scnUpdateCustomerMailStress = scenario("Update Customer Mail - Stress")
+            .feed(customerIdsFeeder)
+            .feed(mailFeeder)
+            .exec(session -> {
+                String customerId = session.getString("customer_id");
+                String mail = session.getString("mail");
+                System.out.println("Updating customer with ID: " + customerId + " to mail: " + mail);
+                return session;
+            })
+            .exec(http("Update Customer Mail")
+                    .put("/bank/customers/update/mail/#{customer_id}?id=#{customer_id}")
+                    .header("Content-Type", "application/json")
+                    .body(StringBody(session -> {
+                        String mail = session.getString("mail");
+                        return "{\"mail\": \"" + mail + "\"}";
+                    }))
+                    .check(status().is(200))
+                    .check(bodyString().saveAs("responseBody"))
+            )
+            .exec(session -> {
+                String responseBody = session.getString("responseBody");
+                System.out.println("Response: " + responseBody);
+                return session;
+            });
+
+
     // Consolidate Load and Stress Tests into a Single setUp
     {
         setUp(
@@ -98,13 +149,14 @@ public class CustomerSimulation extends Simulation {
                 scnCreateMultipleCustomersLoad.injectOpen(rampUsers(10).during(10)),
                 scnGetCustomerByCustomerIdLoad.injectOpen(rampUsers(10).during(10)),
                 scnGetCustomerByCustomerFirstLetterLoad.injectOpen(rampUsers(10).during(10)),
-
+                scnUpdateCustomerMailLoad.injectOpen(rampUsers(10).during(10)),
                 // Stress Test Scenarios
                 scnGetAllCustomersStress.injectOpen(atOnceUsers(100)),
                 scnCreateSingleCustomerStress.injectOpen(atOnceUsers(100)),
                 scnCreateMultipleCustomersStress.injectOpen(atOnceUsers(100)),
                 scnGetCustomerByCustomerIdStress.injectOpen(atOnceUsers(100)),
-                scnGetCustomerByCustomerFirstLetterStress.injectOpen(atOnceUsers(100))
+                scnGetCustomerByCustomerFirstLetterStress.injectOpen(atOnceUsers(100)),
+                scnUpdateCustomerMailStress.injectOpen(atOnceUsers(100))
         ).protocols(httpProtocol)
                 .assertions(global().successfulRequests().percent().gt(75.0));
     }
