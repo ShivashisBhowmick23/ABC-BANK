@@ -114,10 +114,10 @@ public class CustomerStep {
         this.customerId = customerId; // Use an existing customer ID for testing
     }
 
-//    @When("the client requests the customer by customer ID {int}")
-//    public void theClientRequestsTheCustomerByCustomerID(int customerId) {
-//        response = customerController.getCustomerByCustomerId(customerId);
-//    }
+    @When("the client requests the customer by customer ID {int}")
+    public void theClientRequestsTheCustomerByCustomerID(int customerId) {
+        response = customerController.getCustomerByCustomerId(customerId);
+    }
 
     @Then("the customer details by customer ID are returned")
     public void theCustomerDetailsByCustomerIDAreReturned() {
@@ -202,6 +202,20 @@ public class CustomerStep {
         } catch (HttpClientErrorException customerNotFoundException) {
             response = ResponseEntity.status(customerNotFoundException.getStatusCode()).body(customerNotFoundException.getResponseBodyAsString());
         }
+    }
+
+    @Given("the customer ID exists")
+    public void theCustomerIDExists() {
+        customerId = 10;
+    }
+
+    @Given("the customer ID does not exist")
+    public void theCustomerIDDoesNotExist() {
+        customerId = 1000;
+    }
+
+    @When("the client requests to update the customer by customer ID")
+    public void theClientRequestsToUpdateTheCustomerByCustomerID() {
     }
 }
 

@@ -67,41 +67,41 @@ Feature: Customer Management
       | customerId | expectedStatusCode |
       | 999        | 404                |
 
-##  @update
-##  Scenario Outline: Update customer by customer ID
-#    Given the customerId <customerId> exists
-#    And the updated customer data is valid
-#    When the client requests to update the customer by <customerId>
-#    Then the response status should be 200
-#    And the customer is updated successfully
-#    Examples:
-#      | customerId |
-#      | 1          |
+  @update
+  Scenario Outline: Update customer by customer ID
+    Given the customerId <customerId> exists
+    And the updated customer data is valid
+    When the client requests to update the customer by <customerId>
+    Then the response status should be 200
+    And the customer is updated successfully
+    Examples:
+      | customerId |
+      | 1          |
 
-#  @update @error
-#  Scenario Outline: Update non-existent customer by customer ID
-#    Given the <customerId> does not exist
-#    And the updated customer data is valid
-#    When the client requests to update the customer by customer ID
-#    Then the response status should be 404
-#    And the error message should be "Customer not found for customer ID: <customerId>"
-#    Examples:
-#      | customerId | expectedStatusCode |
-#      | 999        | 404                |
+  @update @error
+  Scenario Outline: Update non-existent customer by customer ID
+    Given the <customerId> does not exist
+    And the updated customer data is valid
+    When the client requests to update the customer by customer ID
+    Then the response status should be 404
+    And the error message should be "Customer not found for customer ID: <customerId>"
+    Examples:
+      | customerId | expectedStatusCode |
+      | 999        | 404                |
 
-#  @delete
-#  Scenario: Delete customer by customer ID
-#    Given the customer ID exists
-#    When the client requests to delete the customer by customer ID
-#    Then the response status should be 200
-#    And the customer is deleted successfully
-#
-#  @delete @error
-#  Scenario: Delete non-existent customer by customer ID
-#    Given the customer ID does not exist
-#    When the client requests to delete the customer by customer ID
-#    Then the response status should be 404
-#    And the error message should be "Customer not found for ID: <customerId>"
+  @delete
+  Scenario: Delete customer by customer ID
+    Given the customer ID exists
+    When the client requests to delete the customer by customer ID
+    Then the response status should be 200
+    And the customer is deleted successfully
+
+  @delete @error
+  Scenario: Delete non-existent customer by customer ID
+    Given the customer ID does not exist
+    When the client requests to delete the customer by customer ID
+    Then the response status should be 404
+    And the error message should be "Customer not found for ID: <customerId>"
 
   @get @filter
   Scenario Outline: Get customers by first letter of name
