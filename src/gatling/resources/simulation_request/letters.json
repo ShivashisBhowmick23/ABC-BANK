@@ -1,5 +1,11 @@
 [
-  {"letter": "A"},
-  {"letter": "B"},
-  {"letter": "C"}
+  {
+    "letter": "A"
+  },
+  {
+    "letter": "B"
+  },
+  {
+    "letter": "C"
+  }
 ]

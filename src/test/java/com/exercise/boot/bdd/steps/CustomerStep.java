@@ -19,17 +19,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerStep {
 
+    String letter;
     @Autowired
     private CustomerController customerController;
-
     @Autowired
     private TestDataHelper testDataHelper;
-
     private CustomerRequest customerRequest;
     private CustomerListRequest customerListRequest;
     private long accountId;
     private long customerId;
-    private char letter;
     private ResponseEntity<?> response;
 
     @Given("the customer data is valid")
@@ -161,7 +159,7 @@ public class CustomerStep {
 
     @Given("there are customers whose names start with {string}")
     public void thereAreCustomersWhoseNamesStartWith(String letter) {
-        this.letter = letter.charAt(0);
+        this.letter = String.valueOf(letter.charAt(0));
     }
 
     @When("the client requests customers by the first letter of name {string}")
@@ -171,9 +169,9 @@ public class CustomerStep {
 
     @And("the customer details by first letter are returned")
     public void theCustomerDetailsByFirstLetterAreReturned() {
-        assertTrue(response.getBody() instanceof List<?>);
+        assertInstanceOf(List.class, response.getBody());
         List<?> customerResponses = (List<?>) response.getBody();
-//        assertFalse(customerResponses.isEmpty());
+        assertFalse(customerResponses.isEmpty());
     }
 
     @When("the client requests all customers")
@@ -183,7 +181,7 @@ public class CustomerStep {
 
     @Then("all customer details are returned")
     public void allCustomerDetailsAreReturned() {
-        assertTrue(response.getBody() instanceof List<?>);
+        assertInstanceOf(List.class, response.getBody());
         List<?> customerResponses = (List<?>) response.getBody();
         assertFalse(customerResponses.isEmpty());
     }
@@ -207,15 +205,6 @@ public class CustomerStep {
     @Given("the customer ID exists")
     public void theCustomerIDExists() {
         customerId = 10;
-    }
-
-    @Given("the customer ID does not exist")
-    public void theCustomerIDDoesNotExist() {
-        customerId = 1000;
-    }
-
-    @When("the client requests to update the customer by customer ID")
-    public void theClientRequestsToUpdateTheCustomerByCustomerID() {
     }
 }
 
