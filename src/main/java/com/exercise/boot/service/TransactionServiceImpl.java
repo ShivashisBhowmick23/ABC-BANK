@@ -6,12 +6,12 @@ import com.exercise.boot.exception.AccountNotFoundException;
 import com.exercise.boot.exception.InsufficientBalanceException;
 import com.exercise.boot.repository.AccountRepository;
 import com.exercise.boot.repository.TransactionRepository;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,7 +66,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> getTransactionsByAccountId(Long accountId) {
         logger.info("Fetching transactions for accountId: {}", accountId);
         List<Transaction> transactions = transactionRepository.findAll().stream().filter(transaction -> transaction.getAccount().getAccount_id().equals(accountId)).collect(Collectors.toList());
-        logger.info("Fetched transactions: {}", transactions);
+        logger.info("Fetched transactions  : {}", transactions);
         return transactions;
     }
 
@@ -74,7 +74,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> getTransactionsByDate(LocalDate date) {
         logger.info("Fetching transactions for date: {}", date);
         List<Transaction> transactions = transactionRepository.findAllByTransactionDate(date);
-        logger.info("Fetched transactions: {}", transactions);
+        logger.info("Fetched transactions : {}", transactions);
         return transactions;
     }
 
@@ -90,7 +90,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<Transaction> getTransactionsByAccountIdAndTransactionType(Long accountId, String transactionType) {
         logger.info("Fetching transactions for accountId: {} and transactionType: {}", accountId, transactionType);
         List<Transaction> transactions = transactionRepository.findAllByAccount_AccountIdAndTransactionType(accountId, transactionType);
-        logger.info("Fetched transactions: {}", transactions);
+        logger.info("Fetched transactions   : {}", transactions);
         return transactions;
     }
 }

@@ -1,0 +1,26 @@
+{
+  "customers": [
+    {
+      "cust_name": "Shivashis",
+      "verification_documents": true,
+      "cust_mail": "test.test@com",
+      "accountList": [
+        {
+          "account_type": "SELF",
+          "balance": 5000
+        }
+      ]
+    },
+    {
+      "cust_name": "Bhowmick",
+      "verification_documents": true,
+      "cust_mail": "test.test@com",
+      "accountList": [
+        {
+          "account_type": "SELF",
+          "balance": 5000
+        }
+      ]
+    }
+  ]
+}

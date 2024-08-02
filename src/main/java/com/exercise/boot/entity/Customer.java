@@ -1,8 +1,9 @@
 package com.exercise.boot.entity;
 
-import jakarta.persistence.*;
+
 import lombok.Data;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ public class Customer {
     private boolean verification_documents;
     private String cust_mail;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true)
     @JoinColumn(name = "cust_id")
     private List<Account> accountList;
 

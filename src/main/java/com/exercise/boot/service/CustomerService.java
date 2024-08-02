@@ -9,12 +9,24 @@ import java.util.List;
 @Service
 public interface CustomerService {
 
-    public Customer createCustomerWithAccounts(Customer customer);
+    Customer createCustomerWithAccounts(Customer customer);
 
-    public List<Customer> createCustomerWithAccounts(List<Customer> customerList);
+    List<Customer> createCustomerWithAccounts(List<Customer> customerList);
 
-    public CustomerResponse getCustomerByCustomerId(long customer_id);
+    CustomerResponse getCustomerByCustomerId(long customer_id);
 
-    public CustomerResponse getCustomerByAccountId(long accountId);
+    CustomerResponse getCustomerByAccountId(long accountId);
+
+    Customer updateCustomer(Customer customer);
+
+    void deleteCustomer(long customerId);
+
+    List<CustomerResponse> getCustomersByFirstLetterOfName(char letter);
+
+    List<Customer> getAllCustomers();
+
+    String updateCustomerOnlyNameById(Long id, String name);
+
+    String updateCustomerMailById(Long id, String mail);
 }
 

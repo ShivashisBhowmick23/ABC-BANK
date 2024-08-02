@@ -1,8 +1,8 @@
 package com.exercise.boot.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
