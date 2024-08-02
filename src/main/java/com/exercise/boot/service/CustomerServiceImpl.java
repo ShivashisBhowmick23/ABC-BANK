@@ -126,6 +126,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Transactional
     public List<CustomerResponse> getCustomersByFirstLetterOfName(char letter) {
         List<Customer> customers = customerRepository.findByCustNameStartingWithIgnoreCase(letter);
         return customers.stream()

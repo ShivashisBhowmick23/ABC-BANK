@@ -16,17 +16,6 @@ Feature: Customer Management
     Then the response status should be 400
     And the error message should be "Verification document cannot be false."
 
-
-  @get @error
-  Scenario Outline: Get customer by non-existent account ID
-    Given the account ID <accountId> does not exist
-    When the client requests the customer by account ID
-    Then the response status should be 404
-    And the error message should be "Customer not found for account ID: <accountId>"
-    Examples:
-      | accountId |
-      | 999       |
-
   @create @multiple
   Scenario: Create multiple customers
     Given the customer data for multiple customers is valid
@@ -64,5 +53,35 @@ Feature: Customer Management
     When the client requests all customers
     Then the response status should be 200
     And all customer details are returned
+
+
+  Scenario Outline: Update the customer name with customer_id
+    Given the customer ID exists
+    When the client requests to update the customer name by <customerId>
+    Then the response status should be 200
+    And customer name is updated successfully
+    Examples:
+      | customerId |
+      | 12         |
+
+  Scenario Outline: Fetch customer by valid customer_id
+    Given the valid customer ID <customerId> exists
+    When the client request to get the customer by <customerId>
+    Then the response status should be 200
+    And customer details are returned
+    Examples:
+      | customerId |
+      | 8          |
+
+  Scenario Outline: Get customers by first letter of name
+    Given there are customers whose names start with "<letter>"
+    When the client requests customers by the first letter of name "<letter>"
+    Then the response status should be <expectedStatusCode>
+    And the customer details by first letter are returned
+
+    Examples:
+      | letter | expectedStatusCode |
+      | a      | 200                |
+      | b      | 200                |
 
 

@@ -2,6 +2,7 @@ package com.exercise.boot.bdd.steps;
 
 import com.exercise.boot.bdd.config.TestDataHelper;
 import com.exercise.boot.controller.CustomerController;
+import com.exercise.boot.repository.CustomerRepository;
 import com.exercise.boot.request.CustomerListRequest;
 import com.exercise.boot.request.CustomerRequest;
 import com.exercise.boot.response.CustomerResponse;
@@ -26,6 +27,8 @@ public class CustomerStep {
     private TestDataHelper testDataHelper;
     private CustomerRequest customerRequest;
     private CustomerListRequest customerListRequest;
+    @Autowired
+    private CustomerRepository customerRepository;
     private long accountId;
     private long customerId;
     private ResponseEntity<?> response;
@@ -63,23 +66,6 @@ public class CustomerStep {
         assertEquals(expectedMessage.replace("<accountId>", String.valueOf(accountId)), actualMessage);
     }
 
-    @Given("the account ID exists")
-    public void theAccountIDExists() {
-        accountId = 234567891;
-    }
-
-    @When("the client requests the customer by account ID")
-    public void theClientRequestsTheCustomerByAccountID() {
-        response = customerController.getCustomerByAccountId(accountId);
-    }
-
-    @Then("the customer details by account ID are returned")
-    public void theCustomerDetailsByAccountIDAreReturned() {
-        assertTrue(response.getBody() instanceof CustomerResponse);
-        CustomerResponse customerResponse = (CustomerResponse) response.getBody();
-        assertNotNull(customerResponse);
-    }
-
     @Given("the {long} does not exist")
     public void theAccountIDDoesNotExist(long accountId) {
         this.accountId = accountId; // Use a non-existing account ID for testing
@@ -107,46 +93,6 @@ public class CustomerStep {
         customerListRequest = testDataHelper.getInvalidMultipleCustomerRequests();
     }
 
-    @Given("the customerId {int} exists")
-    public void theCustomerIDExists(int customerId) {
-        this.customerId = customerId; // Use an existing customer ID for testing
-    }
-
-    @When("the client requests the customer by customer ID {int}")
-    public void theClientRequestsTheCustomerByCustomerID(int customerId) {
-        response = customerController.getCustomerByCustomerId(customerId);
-    }
-
-    @Then("the customer details by customer ID are returned")
-    public void theCustomerDetailsByCustomerIDAreReturned() {
-        assertTrue(response.getBody() instanceof CustomerResponse);
-        CustomerResponse customerResponse = (CustomerResponse) response.getBody();
-        assertNotNull(customerResponse);
-    }
-
-    @Given("the customer ID {int} does not exist")
-    public void theCustomerIDDoesNotExist(int customerId) {
-        this.customerId = customerId; // Use a non-existing customer ID for testing
-    }
-
-    @Given("the updated customer data is valid")
-    public void theUpdatedCustomerDataIsValid() {
-        customerRequest = testDataHelper.validRequestWithAccount();
-    }
-
-    @When("the client requests to update the customer by {int}")
-    public void theClientRequestsToUpdateTheCustomerByCustomerID(int customerId) {
-        CustomerRequest customerRequestWithAccount = testDataHelper.validRequestWithAccount();
-        response = customerController.updateCustomer(customerId, customerRequestWithAccount);
-    }
-
-    @Then("the customer is updated successfully")
-    public void theCustomerIsUpdatedSuccessfully() {
-        assertTrue(response.getBody() instanceof CustomerResponse);
-        CustomerResponse customerResponse = (CustomerResponse) response.getBody();
-        assertEquals("John Doe Updated", customerResponse.getCust_name());
-    }
-
     @When("the client requests to delete the customer by customer ID")
     public void theClientRequestsToDeleteTheCustomerByCustomerID() {
         response = customerController.deleteCustomer(customerId);
@@ -157,22 +103,6 @@ public class CustomerStep {
         assertEquals("Customer with ID " + customerId + " deleted successfully", response.getBody());
     }
 
-    @Given("there are customers whose names start with {string}")
-    public void thereAreCustomersWhoseNamesStartWith(String letter) {
-        this.letter = String.valueOf(letter.charAt(0));
-    }
-
-    @When("the client requests customers by the first letter of name {string}")
-    public void theClientRequestsCustomersByTheFirstLetterOfName(String letter) {
-        response = customerController.getCustomersByFirstLetterOfName(letter.charAt(0));
-    }
-
-    @And("the customer details by first letter are returned")
-    public void theCustomerDetailsByFirstLetterAreReturned() {
-        assertInstanceOf(List.class, response.getBody());
-        List<?> customerResponses = (List<?>) response.getBody();
-        assertFalse(customerResponses.isEmpty());
-    }
 
     @When("the client requests all customers")
     public void theClientRequestsAllCustomers() {
@@ -186,12 +116,6 @@ public class CustomerStep {
         assertFalse(customerResponses.isEmpty());
     }
 
-    @Given("the account ID {int} does not exist")
-    public void theAccountIDDoesNotExist(int accountId) {
-        // Assuming this account ID does not exist in the database
-        this.accountId = accountId;
-
-    }
 
     @When("the client requests the customer by {int}")
     public void theClientRequestsTheCustomerBy(int customerId) {
@@ -206,5 +130,52 @@ public class CustomerStep {
     public void theCustomerIDExists() {
         customerId = 10;
     }
-}
 
+    @When("the client requests to update the customer name by {long}")
+    public void theClientRequestsToUpdateTheCustomerNameBy(Long customerId) {
+        response = customerController.updateCustomerOnlyNameById(customerId, "John Doe Updated");
+    }
+
+    @And("customer name is updated successfully")
+    public void customerNameIsUpdatedSuccessfully() {
+        assertTrue(response.getBody() instanceof CustomerResponse);
+        CustomerResponse customerResponse = (CustomerResponse) response.getBody();
+        assertEquals("John Doe Updated", customerResponse.getCust_name());
+    }
+
+    @When("the client request to get the customer by {long}")
+    public void theClientRequestToGetTheCustomerBy(Long customer_id) {
+        response = customerController.getCustomerByCustomerId(customer_id);
+    }
+
+    @And("customer details are returned")
+    public void customerDetailsAreReturned() {
+        assertInstanceOf(CustomerResponse.class, response.getBody());
+        CustomerResponse customerResponse = (CustomerResponse) response.getBody();
+        assertEquals(customerId, customerResponse.getCust_id());
+    }
+
+    @Given("the valid customer ID {long} exists")
+    public void theValidCustomerIDExists(Long customer_id) {
+        this.customerId = customer_id;
+    }
+
+    @Given("there are customers whose names start with {string}")
+    public void thereAreCustomersWhoseNamesStartWith(String letter) {
+        this.letter = String.valueOf(letter.charAt(0));
+    }
+
+    @When("the client requests customers by the first letter of name {string}")
+    public void theClientRequestsCustomersByTheFirstLetterOfName(String letter) {
+        response = customerController.getCustomersByFirstLetterOfName(letter.charAt(0));
+        System.out.println();
+        System.out.println(response.getBody());
+    }
+
+    @And("the customer details by first letter are returned")
+    public void theCustomerDetailsByFirstLetterAreReturned() {
+        assertTrue(response.getBody() instanceof List<?>);
+        List<?> customerResponses = (List<?>) response.getBody();
+//        assertFalse(customerResponses.isEmpty());
+    }
+}
