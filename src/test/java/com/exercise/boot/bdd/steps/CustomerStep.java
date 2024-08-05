@@ -2,10 +2,13 @@ package com.exercise.boot.bdd.steps;
 
 import com.exercise.boot.bdd.config.TestDataHelper;
 import com.exercise.boot.controller.CustomerController;
+import com.exercise.boot.exception.CustomerNotFoundException;
 import com.exercise.boot.repository.CustomerRepository;
 import com.exercise.boot.request.CustomerListRequest;
 import com.exercise.boot.request.CustomerRequest;
+import com.exercise.boot.response.AccountResponse;
 import com.exercise.boot.response.CustomerResponse;
+import com.exercise.boot.service.CustomerService;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,15 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 public class CustomerStep {
 
     String letter;
     @Autowired
     private CustomerController customerController;
+    @Autowired
+    private CustomerService customerService;
     @Autowired
     private TestDataHelper testDataHelper;
     private CustomerRequest customerRequest;
@@ -32,6 +40,7 @@ public class CustomerStep {
     private long accountId;
     private long customerId;
     private ResponseEntity<?> response;
+
 
     @Given("the customer data is valid")
     public void theCustomerDataIsValid() {
@@ -176,6 +185,39 @@ public class CustomerStep {
     public void theCustomerDetailsByFirstLetterAreReturned() {
         assertTrue(response.getBody() instanceof List<?>);
         List<?> customerResponses = (List<?>) response.getBody();
-//        assertFalse(customerResponses.isEmpty());
+        assertFalse(customerResponses.isEmpty());
+    }
+
+    @Given("the customer with account ID {long} exists")
+    public void the_customer_with_account_id_exists(long accountId) {
+        this.accountId = accountId;
+    }
+
+    @When("the client requests to get the customer by account ID {long}")
+    public void theClientRequestsToGetTheCustomerByAccountId(long accountId) {
+        response = customerController.getCustomerByAccountId(accountId);
+    }
+
+    @And("the customer details are returned")
+    public void theCustomerDetailsAreReturned() {
+        assertInstanceOf(CustomerResponse.class, response.getBody());
+        CustomerResponse customerResponse = (CustomerResponse) response.getBody();
+        assertEquals(accountId, customerResponse.getAccountList().get(0).getAccount_id());
+    }
+
+    @Given("the customer with account ID {long} does not exist")
+    public void the_customer_with_account_id_does_not_exist(long accountId) {
+        this.accountId = accountId;
+    }
+
+    @Given("there is an error fetching customer with account ID {long}")
+    public void there_is_an_error_fetching_customer_with_account_id(long accountId) {
+        this.accountId = accountId;
+    }
+
+    @Then("the error message should contain {string}")
+    public void the_error_message_should_contain(String errorMessage) {
+        String actualErrorMessage = Objects.requireNonNull(response.getBody()).toString();
+        assertTrue(actualErrorMessage.contains(errorMessage));
     }
 }
