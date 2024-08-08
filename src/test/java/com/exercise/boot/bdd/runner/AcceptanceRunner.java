@@ -5,10 +5,9 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "src/test/resources/features/CustomerController.feature",
+@CucumberOptions(features = "src/test/resources/features",
         glue = {"com.exercise.boot.bdd.steps", "com.exercise.boot.bdd.config"},
-        plugin = {"pretty", "html:target/cucumber.html", "json:target/cucumber.json"},
-//        tags = "@GetCustomerByValidAccountId",
+        plugin = {"pretty", "html:build/reports/cucumber-reports/cucumber.html", "json:build/reports/cucumber-reports/cucumber.json"},
         publish = true)
-public class CustomerRunner {
+public class AcceptanceRunner {
 }

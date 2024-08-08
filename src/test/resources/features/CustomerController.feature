@@ -97,7 +97,7 @@ Feature: Customer Management
       | accountId |
       | 567891234 |
       | 123456789 |
-      | 575757575 |
+      | 345678912 |
       | 678912345 |
 
   @GetCustomerByInvalidAccountId

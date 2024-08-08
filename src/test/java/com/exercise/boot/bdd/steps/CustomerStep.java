@@ -2,11 +2,9 @@ package com.exercise.boot.bdd.steps;
 
 import com.exercise.boot.bdd.config.TestDataHelper;
 import com.exercise.boot.controller.CustomerController;
-import com.exercise.boot.exception.CustomerNotFoundException;
 import com.exercise.boot.repository.CustomerRepository;
 import com.exercise.boot.request.CustomerListRequest;
 import com.exercise.boot.request.CustomerRequest;
-import com.exercise.boot.response.AccountResponse;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.service.CustomerService;
 import io.cucumber.java.en.And;
@@ -17,12 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 public class CustomerStep {
 

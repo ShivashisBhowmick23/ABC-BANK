@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
@@ -38,7 +39,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Internal server error"),
             @ApiResponse(responseCode = "404", description = "Transaction not found"),
     })
-    public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionRequest transactionRequest) {
+    public ResponseEntity<Transaction> createTransaction(@Valid @RequestBody TransactionRequest transactionRequest) {
         logger.info("Creating transaction with accountId: {}, amount: {}, transactionType: {}", transactionRequest.getAccountId(), transactionRequest.getAmount(), transactionRequest.getTransactionType());
         Transaction transaction = transactionService.createTransaction(transactionRequest.getAccountId(), transactionRequest.getAmount(), transactionRequest.getTransactionType());
         logger.info("Transaction created: {}", transaction);
@@ -53,7 +54,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "500", description = "Internal server error"),
             @ApiResponse(responseCode = "404", description = "Transaction not found"),
     })
-    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@PathVariable Long accountId) {
+    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@Valid @PathVariable Long accountId) {
         logger.info("Fetching transactions for account id: {}", accountId);
         List<Transaction> transactions = transactionService.getTransactionsByAccountId(accountId);
         logger.info("Retrieved {} transactions for account id: {}", transactions.size(), accountId);
