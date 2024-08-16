@@ -2,6 +2,7 @@ package com.exercise.boot.controller;
 
 import com.exercise.boot.constants.BankURLConstant;
 import com.exercise.boot.entity.Transaction;
+import com.exercise.boot.exception.TransactionNotFound;
 import com.exercise.boot.request.TransactionRequest;
 import com.exercise.boot.response.TransactionResponse;
 import com.exercise.boot.service.TransactionService;
@@ -33,12 +34,7 @@ public class TransactionController {
 
     @PostMapping("/create")
     @Operation(summary = "Create transaction", description = "Create transaction")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transaction created successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-            @ApiResponse(responseCode = "404", description = "Transaction not found"),
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
     public ResponseEntity<Transaction> createTransaction(@Valid @RequestBody TransactionRequest transactionRequest) {
         logger.info("Creating transaction with accountId: {}, amount: {}, transactionType: {}", transactionRequest.getAccountId(), transactionRequest.getAmount(), transactionRequest.getTransactionType());
         Transaction transaction = transactionService.createTransaction(transactionRequest.getAccountId(), transactionRequest.getAmount(), transactionRequest.getTransactionType());
@@ -48,12 +44,7 @@ public class TransactionController {
 
     @GetMapping(BankURLConstant.GET_TRANSACTION_BY_ACC_ID)
     @Operation(summary = "Get transactions by account id", description = "Get transactions by account id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-            @ApiResponse(responseCode = "404", description = "Transaction not found"),
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
     public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@Valid @PathVariable Long accountId) {
         logger.info("Fetching transactions for account id: {}", accountId);
         List<Transaction> transactions = transactionService.getTransactionsByAccountId(accountId);
@@ -63,12 +54,7 @@ public class TransactionController {
 
     @GetMapping("/by-date")
     @Operation(summary = "Get transactions by date", description = "Get transactions by date")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-            @ApiResponse(responseCode = "404", description = "Transaction not found"),
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
     public ResponseEntity<?> getTransactionsByDate(@RequestParam String date) {
         logger.info("Received request to get transactions for date: {}", date);
         try {
@@ -88,12 +74,7 @@ public class TransactionController {
 
     @GetMapping("/by-transaction-type")
     @Operation(summary = "Get transactions by transaction type", description = "Get transactions by transaction type")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-            @ApiResponse(responseCode = "404", description = "Transaction not found"),
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
     public ResponseEntity<List<TransactionResponse>> getTransactionsByTransactionType(@RequestParam String transactionType) {
         logger.info("Received request to get transactions by transaction type: {}", transactionType);
 
@@ -116,12 +97,7 @@ public class TransactionController {
 
     @GetMapping("/by-account-id-and-transaction-type/{accountId}")
     @Operation(summary = "Get transactions by account id and transaction type", description = "Get transactions by account id and transaction type")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-            @ApiResponse(responseCode = "404", description = "Transaction not found"),
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
     public ResponseEntity<List<TransactionResponse>> getTransactionsByAccountIdAndTransactionType(@PathVariable Long accountId, @RequestParam String transactionType) {
         try {
             logger.info("Fetching transactions for account ID: {} and transaction type: {}", accountId, transactionType);
@@ -152,6 +128,35 @@ public class TransactionController {
 
             // Handling the exception here, e.g. return a 500 error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.singletonList(transactionResponse));
+        }
+    }
+
+    @GetMapping("/by-transaction-id/{transactionId}")
+    @Operation(summary = "Get transaction by transaction id", description = "Get transaction by transaction id")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
+    public ResponseEntity<TransactionResponse> getTransactionByTransactionId(@PathVariable Long transactionId) {
+        try {
+            logger.info("Fetching transaction for transaction ID: {}", transactionId);
+            Transaction transaction = transactionService.getTransactionByTransactionId(transactionId);
+            logger.info("Found transaction for transaction ID: {}", transactionId);
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setTransactionId(transaction.getTransactionId());
+            transactionResponse.setAccountId(transaction.getAccount().getAccount_id());
+            transactionResponse.setAmount(transaction.getAmount());
+            transactionResponse.setTransactionType(transaction.getTransactionType());
+            transactionResponse.setTransactionDate(transaction.getTransactionDate());
+            logger.info("Returning transaction for transaction ID: {}", transactionId);
+            return ResponseEntity.ok(transactionResponse);
+        } catch (TransactionNotFound transactionNotFound) {
+            logger.error("Error processing transaction for transaction ID: {}", transactionId, transactionNotFound);
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setTransactionId(transactionId);
+            transactionResponse.setAccountId(0L);
+            transactionResponse.setAmount(0.0);
+            transactionResponse.setTransactionType("");
+            transactionResponse.setTransactionDate(LocalDate.now());
+            // Handling the exception here, e.g. return a 500 error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(transactionResponse);
         }
     }
 }

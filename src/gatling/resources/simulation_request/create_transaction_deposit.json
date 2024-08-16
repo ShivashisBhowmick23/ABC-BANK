@@ -1,0 +1,5 @@
+{
+  "accountId": 123456789,
+  "amount": 1000.0,
+  "transactionType": "DEPOSIT"
+}
