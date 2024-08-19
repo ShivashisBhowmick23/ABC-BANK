@@ -2,7 +2,9 @@ package com.exercise.boot.mapper;
 
 import com.exercise.boot.entity.Transaction;
 import com.exercise.boot.response.TransactionResponse;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TransactionMapper {
     public Transaction convertToEntity(TransactionResponse transactionResponse) {
 

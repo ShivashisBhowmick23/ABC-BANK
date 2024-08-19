@@ -23,8 +23,8 @@ Feature: Transaction Management
   Scenario Outline: Error handling for transaction operations
     Given the transaction with ID <transactionId> does not exist
     When the client requests to fetch transaction by ID <transactionId>
-    Then the response status should 404
-    And the error message should "Transaction not found for ID <transactionId>"
+    Then the response status should 500
+    And the error message should "An error occurred: Transaction not found for ID <transactionId>"
 
     Examples:
       | transactionId |

@@ -3,6 +3,7 @@ package com.exercise.boot.controller;
 import com.exercise.boot.constants.BankURLConstant;
 import com.exercise.boot.entity.Transaction;
 import com.exercise.boot.exception.TransactionNotFound;
+import com.exercise.boot.mapper.TransactionMapper;
 import com.exercise.boot.request.TransactionRequest;
 import com.exercise.boot.response.TransactionResponse;
 import com.exercise.boot.service.TransactionService;
@@ -31,6 +32,9 @@ public class TransactionController {
     private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private TransactionMapper transactionMapper;
 
     @PostMapping("/create")
     @Operation(summary = "Create transaction", description = "Create transaction")
@@ -134,30 +138,26 @@ public class TransactionController {
     @GetMapping("/by-transaction-id/{transactionId}")
     @Operation(summary = "Get transaction by transaction id", description = "Get transaction by transaction id")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
-    public ResponseEntity<TransactionResponse> getTransactionByTransactionId(@PathVariable Long transactionId) {
+    public ResponseEntity<?> getTransactionByTransactionId(@PathVariable Long transactionId) {
+        if (transactionId == null) {
+            return ResponseEntity.badRequest().body("Transaction ID cannot be null");
+        }
+
         try {
             logger.info("Fetching transaction for transaction ID: {}", transactionId);
             Transaction transaction = transactionService.getTransactionByTransactionId(transactionId);
+
+            if (transaction == null) {
+                throw new TransactionNotFound("Transaction not found for ID " + transactionId);
+            }
+
             logger.info("Found transaction for transaction ID: {}", transactionId);
-            TransactionResponse transactionResponse = new TransactionResponse();
-            transactionResponse.setTransactionId(transaction.getTransactionId());
-            transactionResponse.setAccountId(transaction.getAccount().getAccount_id());
-            transactionResponse.setAmount(transaction.getAmount());
-            transactionResponse.setTransactionType(transaction.getTransactionType());
-            transactionResponse.setTransactionDate(transaction.getTransactionDate());
-            logger.info("Returning transaction for transaction ID: {}", transactionId);
+            // Assuming you have a method to convert Transaction to TransactionResponse;
+            TransactionResponse transactionResponse = transactionMapper.convertToResponse(transaction);
             return ResponseEntity.ok(transactionResponse);
-        } catch (TransactionNotFound transactionNotFound) {
-            logger.error("Error processing transaction for transaction ID: {}", transactionId, transactionNotFound);
-            TransactionResponse transactionResponse = new TransactionResponse();
-            transactionResponse.setTransactionId(transactionId);
-            transactionResponse.setAccountId(0L);
-            transactionResponse.setAmount(0.0);
-            transactionResponse.setTransactionType("");
-            transactionResponse.setTransactionDate(LocalDate.now());
-            // Handling the exception here, e.g. return a 500 error response
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(transactionResponse);
+        } catch (Exception e) {
+            logger.error("Error processing transaction for transaction ID: {}", transactionId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 }
-
