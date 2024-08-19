@@ -56,10 +56,10 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
     }
 
-    @GetMapping("/by-date")
+    @GetMapping("/by-date/{date}")
     @Operation(summary = "Get transactions by date", description = "Get transactions by date")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Transaction retrieved successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Transaction not found"),})
-    public ResponseEntity<?> getTransactionsByDate(@RequestParam String date) {
+    public ResponseEntity<?> getTransactionsByDate(@PathVariable("date") String date) {
         logger.info("Received request to get transactions for date: {}", date);
         try {
             LocalDate transactionDate = LocalDate.parse(date);
