@@ -93,4 +93,12 @@ public class TransactionServiceImpl implements TransactionService {
         logger.info("Fetched transactions   : {}", transactions);
         return transactions;
     }
+
+    @Override
+    public Transaction getTransactionByTransactionId(Long transactionId) {
+        logger.info("Fetching transaction for transactionId: {}", transactionId);
+        Transaction transactions = transactionRepository.findAllByTransactionId(transactionId);
+        logger.info("Fetched transaction: {}", transactions);
+        return transactions;
+    }
 }

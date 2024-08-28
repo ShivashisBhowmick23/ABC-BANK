@@ -2,28 +2,28 @@
 Feature: Customer Management
   Customer management operations in the bank system.
 
-  @createCustomer
+  @createSingleCustomer
   Scenario: Create a single customer
     Given the customer data is valid
     When the client requests to create a customer
     Then the response status should be 200
     And the customer is created successfully
 
-  @create @error
+  @createSingleCustomerWithMissingVerificationDoc
   Scenario: Create a single customer with missing verification documents
     Given the customer data is missing verification documents
     When the client requests to create a customer
     Then the response status should be 400
     And the error message should be "Verification document cannot be false."
 
-  @create @multiple
+  @createMultipleCustomers
   Scenario: Create multiple customers
     Given the customer data for multiple customers is valid
     When the client requests to create multiple customers
     Then the response status should be 200
     And the customers are created successfully
 
-  @create @multiple @error
+  @createMultipleCustomersWithSomeMissingVerificationDoc
   Scenario: Create multiple customers with invalid data
     Given some customer data is missing verification documents
     When the client requests to create multiple customers
@@ -31,7 +31,7 @@ Feature: Customer Management
     And the error message should be "Some customer requests do not have verification documents."
 
 
-  @get @error
+  @getCustomerByInvalidCustomerId
   Scenario Outline: Get customer by non-existent customer ID
     Given the <customerId> does not exist
     When the client requests the customer by <customerId>
@@ -41,20 +41,20 @@ Feature: Customer Management
       | customerId | expectedStatusCode |
       | 999        | 404                |
 
-  @delete
+  @deleteCustomerByCustomerId
   Scenario: Delete customer by customer ID
     Given the customer ID exists
     When the client requests to delete the customer by customer ID
     Then the response status should be 200
     And the customer is deleted successfully
 
-  @get @all
+  @getAllCustomers
   Scenario: Get all customers
     When the client requests all customers
     Then the response status should be 200
     And all customer details are returned
 
-
+  @UpdateCustomerByCustomerId
   Scenario Outline: Update the customer name with customer_id
     Given the customer ID exists
     When the client requests to update the customer name by <customerId>
@@ -64,6 +64,7 @@ Feature: Customer Management
       | customerId |
       | 12         |
 
+  @GetCustomerByValidCustomerId
   Scenario Outline: Fetch customer by valid customer_id
     Given the valid customer ID <customerId> exists
     When the client request to get the customer by <customerId>
@@ -73,6 +74,7 @@ Feature: Customer Management
       | customerId |
       | 8          |
 
+  @GetCustomerByFirstLetterOfCustomerName
   Scenario Outline: Get customers by first letter of name
     Given there are customers whose names start with "<letter>"
     When the client requests customers by the first letter of name "<letter>"
@@ -83,5 +85,43 @@ Feature: Customer Management
       | letter | expectedStatusCode |
       | a      | 200                |
       | b      | 200                |
+
+  @GetCustomerByValidAccountId
+  Scenario Outline: Fetch customer by a valid account ID
+    Given the customer with account ID <accountId> exists
+    When the client requests to get the customer by account ID <accountId>
+    Then the response status should be 200
+    And the customer details are returned
+
+    Examples:
+      | accountId |
+      | 567891234 |
+      | 123456789 |
+      | 345678912 |
+      | 678912345 |
+
+  @GetCustomerByInvalidAccountId
+  Scenario Outline: Fetch customer by an invalid account ID
+    Given the customer with account ID <accountId> does not exist
+    When the client requests to get the customer by account ID <accountId>
+    Then the response status should be 404
+    And the error message should be "Customer not found for account ID: <accountId>"
+
+    Examples:
+      | accountId |
+      | 99999     |
+      | 11111     |
+
+  @GetCustomerByInvalidAccountId_Handle_Error
+  Scenario Outline: Handle errors when fetching customer by account ID
+    Given there is an error fetching customer with account ID <accountId>
+    When the client requests to get the customer by account ID <accountId>
+    Then the response status should be 404
+    And the error message should be "Customer not found for account ID: <accountId>"
+
+    Examples:
+      | accountId |
+      | 22222     |
+      | 33333     |
 
 

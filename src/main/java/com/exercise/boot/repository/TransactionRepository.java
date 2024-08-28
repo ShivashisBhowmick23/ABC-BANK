@@ -17,5 +17,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query(nativeQuery = true, value = "SELECT * FROM transaction WHERE account_id = ?1 AND transaction_type = ?2")
     List<Transaction> findAllByAccount_AccountIdAndTransactionType(Long accountId, String transactionType);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM transaction WHERE transaction_id = ?1")
+    Transaction findAllByTransactionId(Long transactionId);
 }
 

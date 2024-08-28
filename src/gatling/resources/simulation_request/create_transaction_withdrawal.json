@@ -1,0 +1,5 @@
+{
+  "accountId": 456789123,
+  "amount": 100,
+  "transactionType": "WITHDRAWAL"
+}

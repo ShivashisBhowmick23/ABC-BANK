@@ -17,4 +17,6 @@ public interface TransactionService {
     List<Transaction> getTransactionsByTransactionType(String transactionType);
 
     List<Transaction> getTransactionsByAccountIdAndTransactionType(Long accountId, String transactionType);
+
+    Transaction getTransactionByTransactionId(Long transactionId);
 }
