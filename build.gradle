@@ -66,8 +66,14 @@ tasks.named('test') {
 
 test {
     useJUnit {
-        include '**/*Runner*'
     }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+tasks.named('test') {
+    useJUnitPlatform()
+    include '**/*Test.class'
     testLogging {
         events "passed", "skipped", "failed"
     }
