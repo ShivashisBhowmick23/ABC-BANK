@@ -1,0 +1,4 @@
+[
+  { "fromAccountId": 1, "toAccountId": 2, "amount": 100, "transferType": "DEBIT", "transferDate": "2024-08-30" },
+  { "fromAccountId": 2, "toAccountId": 3, "amount": 200, "transferType": "CREDIT", "transferDate": "2024-08-31" }
+]

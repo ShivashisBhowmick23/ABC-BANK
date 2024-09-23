@@ -21,6 +21,17 @@
           "balance": 5000
         }
       ]
+    },
+    {
+      "cust_name": "Sharma",
+      "verification_documents": true,
+      "cust_mail": "test.test@com",
+      "accountList": [
+        {
+          "account_type": "SELF",
+          "balance": 5000
+        }
+      ]
     }
   ]
 }

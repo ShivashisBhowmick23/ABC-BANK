@@ -134,7 +134,7 @@ public class CustomerController {
 
             // Convert updatedCustomerRequest to Customer entity
             Customer updatedCustomer = customerMapper.convertToEntity(updatedCustomerRequest);
-
+            updatedCustomer.setCust_id((long) customerResponse.getCust_id());
             updatedCustomer.setCust_name(customerResponse.getCust_name());
             updatedCustomer.setCust_mail(customerResponse.getCust_mail());
             updatedCustomer.setVerification_documents(customerResponse.isVerification_documents());

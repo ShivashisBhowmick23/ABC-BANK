@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,9 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-// Add this annotation to enable Mockito
+
+@ActiveProfiles("dev")
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // Add this annotation to enable Mockito
 class TransferControllerTest {
 
     @Mock

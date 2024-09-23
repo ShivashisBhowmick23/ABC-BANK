@@ -1,0 +1,19 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create
+  application:
+    name: ABC-Bank
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: tiger
+    url: jdbc:postgresql://localhost:5432/ABC_Bank
+    username: postgres
+  sql:
+    init:
+      data-locations: classpath:db/data_pg.sql
+      mode: always
+      schema-locations: classpath:db/schema_pg.sql
