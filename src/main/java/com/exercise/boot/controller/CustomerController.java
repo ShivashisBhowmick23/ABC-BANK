@@ -9,6 +9,8 @@ import com.exercise.boot.request.CustomerListRequest;
 import com.exercise.boot.request.CustomerRequest;
 import com.exercise.boot.response.CustomerResponse;
 import com.exercise.boot.service.CustomerService;
+import com.exercise.boot.util.EmailContentBuilder;
+import com.exercise.boot.util.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -37,6 +39,13 @@ public class CustomerController {
     @Autowired
     private CustomerMapper customerMapper;
 
+    @Autowired
+    private EmailService emailService;  // Email service to send email
+
+    @Autowired
+    private EmailContentBuilder emailContentBuilder;  // Content builder to prepare email content
+
+
     @PostMapping("/add/single-customer")
     @Operation(summary = "Create customer", description = "Create customer")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),
@@ -56,6 +65,13 @@ public class CustomerController {
         logger.info("Customer created with accounts: {}", savedCustomer);
 
         CustomerResponse customerResponse = customerMapper.convertToResponse(savedCustomer);
+
+        // Prepare email content using EmailContentBuilder
+        String subject = "Account Created Successfully!";
+        String emailBody = emailContentBuilder.buildAccountCreationEmailContent(customer.getCust_name(), String.valueOf(customer.getAccountList().get(0).getAccount_id()));
+
+        // Send email
+        emailService.sendEmail(customer.getCust_mail(), subject, emailBody);
 
         logger.info("Returning customer response");
         return ResponseEntity.ok(customerResponse);
