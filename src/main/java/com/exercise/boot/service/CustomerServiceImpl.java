@@ -167,7 +167,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerResponse response = new CustomerResponse();
         response.setCust_id(Math.toIntExact(customer.getCust_id()));
         response.setCust_name(customer.getCust_name());
-        response.setVerification_documents(customer.isVerification_documents());
+        response.setVerification_documents(customer.getVerification_documents());
         response.setCust_mail(customer.getCust_mail());
         response.setAccountList(customer.getAccountList().stream().map(account -> {
             AccountResponse accountResponse = new AccountResponse();

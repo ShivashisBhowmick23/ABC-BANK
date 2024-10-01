@@ -16,7 +16,7 @@ public class CustomerMapper {
     public Customer convertToEntity(CustomerRequest customerRequest) {
         Customer customer = new Customer();
         customer.setCust_name(customerRequest.getCust_name());
-        customer.setVerification_documents(customerRequest.isVerification_documents());
+        customer.setVerification_documents(customerRequest.getVerification_documents());
         customer.setCust_mail(customerRequest.getCust_mail());
 
         List<Account> accounts = new ArrayList<>();
@@ -34,7 +34,7 @@ public class CustomerMapper {
         CustomerResponse response = new CustomerResponse();
         response.setCust_id(Math.toIntExact(customer.getCust_id()));
         response.setCust_name(customer.getCust_name());
-        response.setVerification_documents(customer.isVerification_documents());
+        response.setVerification_documents(customer.getVerification_documents());
         response.setCust_mail(customer.getCust_mail());
 
         List<AccountResponse> accountResponses = new ArrayList<>();

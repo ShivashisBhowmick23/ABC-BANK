@@ -11,7 +11,8 @@ import com.exercise.boot.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+
 @ActiveProfiles("dev")
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
- class CustomerControllerTest {
+class CustomerControllerTest {
 
     @InjectMocks
     private CustomerController customerController;
@@ -54,7 +56,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testCreateCustomer_Success() {
+    void testCreateCustomer_Success() {
         when(customerMapper.convertToEntity(customerRequest)).thenReturn(customer);
         when(customerService.createCustomerWithAccounts(customer)).thenReturn(customer);
         when(customerMapper.convertToResponse(customer)).thenReturn(customerResponse);
@@ -65,7 +67,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testCreateCustomer_InvalidRequest() {
+    void testCreateCustomer_InvalidRequest() {
         customerRequest.setVerification_documents(false);
         ResponseEntity<?> response = customerController.createCustomer(customerRequest);
 
@@ -113,7 +115,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testDeleteCustomer_Success() {
+    void testDeleteCustomer_Success() {
         doNothing().when(customerService).deleteCustomer(1L);
 
         ResponseEntity<?> response = customerController.deleteCustomer(1L);
@@ -123,7 +125,7 @@ import static org.mockito.Mockito.*;
     }
 
     @Test
-     void testDeleteCustomer_NotFound() throws CustomerNotFoundException {
+    void testDeleteCustomer_NotFound() throws CustomerNotFoundException {
         doThrow(new CustomerNotFoundException("Customer not found")).when(customerService).deleteCustomer(1L);
 
         ResponseEntity<?> response = customerController.deleteCustomer(1L);
@@ -146,7 +148,7 @@ import static org.mockito.Mockito.*;
 //    }
 
     @Test
-     void testUpdateCustomer_NotFound() throws CustomerNotFoundException {
+    void testUpdateCustomer_NotFound() throws CustomerNotFoundException {
         when(customerService.getCustomerByCustomerId(1L)).thenThrow(new CustomerNotFoundException("Customer not found"));
 
         ResponseEntity<?> response = customerController.updateCustomer(1L, customerRequest);
@@ -170,7 +172,7 @@ import static org.mockito.Mockito.*;
 
 
     @Test
-     void testUpdateCustomerOnlyNameById_NotFound() throws CustomerNotFoundException {
+    void testUpdateCustomerOnlyNameById_NotFound() throws CustomerNotFoundException {
         doThrow(new CustomerNotFoundException("Customer not found")).when(customerService).updateCustomerOnlyNameById(1L, "John");
 
         ResponseEntity<?> response = customerController.updateCustomerOnlyNameById(1L, "John");

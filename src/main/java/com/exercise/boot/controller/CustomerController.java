@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,8 +52,8 @@ public class CustomerController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),
 
     })
-    public ResponseEntity<?> createCustomer(@RequestBody CustomerRequest customerRequest) {
-        if (!customerRequest.isVerification_documents()) {
+    public ResponseEntity<?> createCustomer(@NotNull @Valid @RequestBody CustomerRequest customerRequest) {
+        if (!customerRequest.getVerification_documents()) {
             logger.error("Verification document cannot be false for customer: {}", customerRequest);
             return ResponseEntity.badRequest().body("Verification document cannot be false.");
         }
@@ -97,25 +98,41 @@ public class CustomerController {
 
     @PostMapping("/add/multiple-customers")
     @Operation(summary = "Create multiple customers", description = "Create multiple customers")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customers created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"),})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Customers created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<?> addMultipleCustomers(@RequestBody CustomerListRequest customerListRequest) {
         List<CustomerRequest> customerRequestList = customerListRequest.getCustomers();
-
         logger.info("Received request to add multiple customers: {}", customerRequestList.size());
 
-        List<CustomerRequest> validCustomerRequests = customerRequestList.stream().filter(CustomerRequest::isVerification_documents).toList();
+        List<CustomerRequest> validCustomerRequests = customerRequestList.stream()
+                .filter(CustomerRequest::getVerification_documents).toList();
 
         if (validCustomerRequests.size() != customerRequestList.size()) {
             logger.error("Some customer requests do not have verification documents");
             return ResponseEntity.badRequest().body("Some customer requests do not have verification documents.");
         }
 
-        List<Customer> customers = validCustomerRequests.stream().map(customerMapper::convertToEntity).toList();
+        List<Customer> customers = validCustomerRequests.stream()
+                .map(customerMapper::convertToEntity).toList();
 
         List<Customer> savedCustomers = customerService.createCustomerWithAccounts(customers);
         logger.info("Created {} customers with accounts", savedCustomers.size());
 
-        List<CustomerResponse> customerResponses = savedCustomers.stream().map(customerMapper::convertToResponse).toList();
+        // Send an email to each customer
+        savedCustomers.forEach(customer -> {
+            String emailContent = emailContentBuilder.buildAccountCreationEmailContent(
+                    customer.getCust_name(),
+                    String.valueOf(customer.getAccountList().get(0).getAccount_id())
+            );
+            logger.info("Sending email to {}", customer.getCust_mail());
+            emailService.sendEmail(customer.getCust_mail(), "Account Created Successfully", emailContent);
+        });
+
+        List<CustomerResponse> customerResponses = savedCustomers.stream()
+                .map(customerMapper::convertToResponse).toList();
 
         logger.info("Returning customer responses");
         return ResponseEntity.ok(customerResponses);

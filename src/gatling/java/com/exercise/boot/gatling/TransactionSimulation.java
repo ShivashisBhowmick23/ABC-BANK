@@ -33,6 +33,7 @@ public class TransactionSimulation extends Simulation {
     ScenarioBuilder scnCreateTransactionWithdrawalStress = scenario("Create Transaction Withdrawal - Stress").exec(http("Create Transaction Withdrawal Stress").post("/transaction/create").header(CONTENT_TYPE, APPLICATION_JSON).body(StringBody(getBody("simulation_request/create_transaction_withdrawal.json"))).check(status().is(200)));
     ScenarioBuilder scnFetchTransactionByDateLoad = scenario("Get Transaction By Date - Load").feed(dateFeeder).exec(http("Fetch Transaction By Date").get("/transaction/by-date/#{date}").check(status().is(200)));
     ScenarioBuilder scnFetchTransactionByDateStress = scenario("Get Transaction By Date - Stress").feed(dateFeeder).exec(http("Fetch Transaction By Date").get("/transaction/by-date/#{date}").check(status().is(200)));
+
     {
         setUp(
                 // Load Test Scenarios

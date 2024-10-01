@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -15,8 +16,8 @@ import java.util.List;
 public class CustomerRequest {
     @NotEmpty
     private String cust_name;
-    @NotEmpty
-    private boolean verification_documents;
+    @NotNull
+    private Boolean verification_documents;
     @NotEmpty
     private String cust_mail;
     @NotEmpty

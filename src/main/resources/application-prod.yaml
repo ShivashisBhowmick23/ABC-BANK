@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
   application:
     name: ABC-Bank
   config:

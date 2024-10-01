@@ -23,7 +23,7 @@ public class EmailContentBuilder {
 
     // Method to prepare content for transfer activity
     public String buildTransferEmailContent(double amount, int fromAccount, int toAccount) {
-        return "Dear  Customer"+".\n\n" +".\n"+
+        return "Dear  Customer" + ".\n\n" + ".\n" +
                 "You have successfully transferred " + amount + " from your account " + fromAccount +
                 " to account " + toAccount + ".\n" +
                 "If you did not perform this transaction, please contact us immediately.\n\n" +

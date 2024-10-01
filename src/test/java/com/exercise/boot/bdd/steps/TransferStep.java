@@ -2,7 +2,6 @@ package com.exercise.boot.bdd.steps;
 
 import com.exercise.boot.controller.TransferController;
 import com.exercise.boot.entity.Transfer;
-import com.exercise.boot.mapper.TransferMapper;
 import com.exercise.boot.request.TransferRequest;
 import com.exercise.boot.response.TransferResponse;
 import com.exercise.boot.service.TransferService;

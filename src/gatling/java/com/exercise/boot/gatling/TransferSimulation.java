@@ -1,7 +1,9 @@
 package com.exercise.boot.gatling;
 
-import io.gatling.javaapi.core.*;
-import io.gatling.javaapi.http.*;
+import io.gatling.javaapi.core.FeederBuilder;
+import io.gatling.javaapi.core.ScenarioBuilder;
+import io.gatling.javaapi.core.Simulation;
+import io.gatling.javaapi.http.HttpProtocolBuilder;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -12,7 +14,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
-import static io.gatling.javaapi.http.HttpDsl.*;
+import static io.gatling.javaapi.http.HttpDsl.http;
+import static io.gatling.javaapi.http.HttpDsl.status;
 
 public class TransferSimulation extends Simulation {
 
@@ -61,17 +64,17 @@ public class TransferSimulation extends Simulation {
     ScenarioBuilder getTransfersBetweenDatesScenario = scenario("Get Transfers Between Dates").exec(http("Get Transfers Between Dates").get("/betweenDates?fromDate=2024-08-31&toDate=2024-08-30") // Hardcoded dates for example
             .check(status().is(200)));
 
+    // Set up the simulation
+    {
+        setUp(createTransferScenario.injectOpen(atOnceUsers(10)), getTransferByIdScenario.injectOpen(atOnceUsers(10)), getAllTransfersScenario.injectOpen(atOnceUsers(10)), getTransfersByFromAccountIdScenario.injectOpen(atOnceUsers(10)), getTransfersByToAccountIdScenario.injectOpen(atOnceUsers(10)), getTransfersByTransferTypeScenario.injectOpen(atOnceUsers(10)), getTransfersByDateScenario.injectOpen(atOnceUsers(10)), getTransfersBetweenDatesScenario.injectOpen(atOnceUsers(10))).protocols(httpProtocol);
+    }
+
     private String getBody(String route) {
         try (Stream<String> lines = Files.lines(Paths.get(Objects.requireNonNull(CustomerSimulation.class.getClassLoader().getResource(route)).toURI()))) {
             return lines.collect(Collectors.joining("\n"));
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    // Set up the simulation
-    {
-        setUp(createTransferScenario.injectOpen(atOnceUsers(10)), getTransferByIdScenario.injectOpen(atOnceUsers(10)), getAllTransfersScenario.injectOpen(atOnceUsers(10)), getTransfersByFromAccountIdScenario.injectOpen(atOnceUsers(10)), getTransfersByToAccountIdScenario.injectOpen(atOnceUsers(10)), getTransfersByTransferTypeScenario.injectOpen(atOnceUsers(10)), getTransfersByDateScenario.injectOpen(atOnceUsers(10)), getTransfersBetweenDatesScenario.injectOpen(atOnceUsers(10))).protocols(httpProtocol);
     }
 
 }
