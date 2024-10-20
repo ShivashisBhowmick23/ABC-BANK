@@ -46,7 +46,7 @@ public class CustomerController {
     @Autowired
     private EmailContentBuilder emailContentBuilder;  // Content builder to prepare email content
 
-
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/add/single-customer")
     @Operation(summary = "Create customer", description = "Create customer")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Customer created successfully"), @ApiResponse(responseCode = "400", description = "Invalid request"), @ApiResponse(responseCode = "500", description = "Internal server error"), @ApiResponse(responseCode = "404", description = "Customer not found"),
